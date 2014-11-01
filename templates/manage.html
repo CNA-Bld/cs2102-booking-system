@@ -19,21 +19,21 @@
                     <td>{{ booking.date }}</td>
                     <td>
                         {% if booking.is_cancelled %}
-                            Cancelled
+                            <span class="label label-default">Cancelled</span>
                         {% else %}
                             {% if booking.is_processed %}
                                 {% if booking.is_approved %}
-                                    Approved
+                                    <span class="label label-success">Approved</span>
                                 {% else %}
-                                    Declined
+                                    <span class="label label-danger">Declined</span>
                                 {% endif %}
                             {% else %}
-                                Processing
+                                <span class="label label-primary">Processing</span>
                             {% endif %}
                         {% endif %}
                     </td>
                     <td>
-                        <a href="/?cancel={{ booking.id }}" class="btn btn-default" role="button"
+                        <a href="./?cancel={{ booking.id }}" class="btn btn-danger btn-xs" role="button"
                                 {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
                     </td>
                 </tr>
