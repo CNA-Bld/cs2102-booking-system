@@ -56,10 +56,12 @@ class MainHandler(webapp2.RequestHandler):
                              'selected_location': location, 'selected_type': facility_type,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list}
             template_values = dict(base_template_values, **native_values)
-            self.response.out.write(template_values)
+            # self.response.out.write(template_values)
+
+            print template_values
 
             path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
-            # self.response.out.write(template.render(path, template_values))
+            self.response.out.write(template.render(path, template_values))
         else:
             self.redirect('/login/')
 

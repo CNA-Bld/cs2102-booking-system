@@ -80,9 +80,9 @@ $(document).ready(function () {
 					<div class="form-group">
 						<label for="idlocation">Location</label>
 						<select id = "idlocation" name = "location" class="selectpicker">
-							<option value = "0" >Select a location</option>
-							<option value = "1">Load from DB</option>
-
+                            {% for location in location_list %}
+							    <option value = "{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+							{% endfor %}
 						</select>
 					</div>
 
@@ -90,9 +90,9 @@ $(document).ready(function () {
 					<div class="form-group">
 						<label for="idtype">Type:</label>
 						<select id = "idtype" name = "type" class="selectpicker">
-							<option value = "0">Select a type</option>
-							<option value = "1">Load from DB</option>
-
+							{% for type in type_list %}
+							    <option value = "{{ type }}" {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
+							{% endfor %}
 						</select>
 					</div>
 
