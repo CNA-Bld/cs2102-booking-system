@@ -234,4 +234,5 @@ class Book(ndb.Model):
 
     def cancel(self):
         self.is_cancelled = True
+        self.is_processed = False
         self.put()

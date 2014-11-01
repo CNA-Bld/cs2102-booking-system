@@ -18,21 +18,22 @@
                     <td>{{ booking.facility }}</td>
                     <td>{{ booking.date }}</td>
                     <td>
-                        {% if booking.is_cancelled %}
-                            <span class="label label-default">Cancelled</span>
+                        {% if booking.is_processed %}
+                            {% if booking.is_approved %}
+                                <span class="label label-success">Approved</span>
+                            {% else %}
+                                <span class="label label-danger">Declined</span>
+                            {% endif %}
                         {% else %}
-                            {% if booking.is_processed %}
-                                {% if booking.is_approved %}
-                                    <span class="label label-success">Approved</span>
-                                {% else %}
-                                    <span class="label label-danger">Declined</span>
-                                {% endif %}
+                            {% if booking.is_cancelled %}
+                                <span class="label label-default">Cancelled</span>
                             {% else %}
                                 <span class="label label-primary">Processing</span>
                             {% endif %}
                         {% endif %}
                     </td>
                     <td>
+                        <a href="./?view={{ booking.id }}" class="btn btn-default btn-xs" role="button">View</a>
                         <a href="./?cancel={{ booking.id }}" class="btn btn-danger btn-xs" role="button"
                                 {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
                     </td>
