@@ -1,4 +1,3 @@
-import os
 import datetime
 
 import webapp2
@@ -58,6 +57,7 @@ class MainHandler(webapp2.RequestHandler):
                      'price': facility.price_per_hr, 'comment': facility.comment,
                      'room_number': facility.room_number, 'id': facility.key.id(),
                      'availability': facility.check_availability(date).inverted().data} for facility in facilities]
+                facilities_dict_list.sort(key=lambda x: x['location'] + x['type'] + x['room_number'])
             else:
                 is_querying = False
                 facilities_dict_list = []
@@ -101,11 +101,11 @@ class AdminHandler(webapp2.RequestHandler):
             facility.capacity = int(self.request.get('capacity'))
             facility.comment = self.request.get('comment')
             facility.weekday_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('weekday_hr_start')),
-                                                                       int(self.request.get('weekday_hr_end'))))
+                                                                            int(self.request.get('weekday_hr_end'))))
             facility.sat_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sat_hr_start')),
-                                                                   int(self.request.get('sat_hr_end'))))
+                                                                        int(self.request.get('sat_hr_end'))))
             facility.sun_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sun_hr_start')),
-                                                                   int(self.request.get('sun_hr_end'))))
+                                                                        int(self.request.get('sun_hr_end'))))
             facility.put()
         self.redirect('/admin/')
 

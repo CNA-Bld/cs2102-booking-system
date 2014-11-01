@@ -1,7 +1,7 @@
 import os
 
 if os.environ['SERVER_SOFTWARE'].startswith('Development'):
-    APP_PATH = 'http://localhost:8080'
+    APP_PATH = 'http://localhost:8080/'
 else:
     APP_PATH = 'http://booking.softstar.org/'
 
