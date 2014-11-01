@@ -49,8 +49,8 @@ class MainHandler(webapp2.RequestHandler):
                 for facility in facilities:
                     f_dict = {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
                               'price': facility.price_per_hr, 'comment': facility.comment,
-                              'room_number': facility.room_number}
-                    f_dict['availability'] = repr(facility.check_availability(date).inverted())
+                              'room_number': facility.room_number, 'id': facility.key.id()}
+                    f_dict['availability'] = facility.check_availability(date).inverted().data
                     facilities_dict_list.append(f_dict)
             else:
                 facilities_dict_list = []
