@@ -13,7 +13,7 @@ def generate_key():
 
 
 def user_session_create(user, key=generate_key()):
-    memcache.set(SESSION_PREFIX + user, key, 600)
+    memcache.set(SESSION_PREFIX + user, key, 1800)
     return key
 
 

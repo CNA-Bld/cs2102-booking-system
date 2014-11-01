@@ -34,17 +34,17 @@ class LogoutHandler(webapp2.RequestHandler):
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
+        if self.request.get('offset'):
+            date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+            date += datetime.timedelta(days=int(self.request.get('offset')))
+            self.redirect("/?date=%s&location=%s&type=%s&capacity=%s" % (
+                date.strftime("%d-%m-%Y"), self.request.get("location"), self.request.get("type"),
+                self.request.get("capacity")))
         user = self.request.cookies.get('user')
         key = self.request.cookies.get('session_key')
         if user is None:
             self.redirect('/login/')
         elif login.user_session_check(user, key):
-            if self.request.get('offset'):
-                date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
-                date += datetime.timedelta(days=int(self.request.get('offset')))
-                self.redirect("/?date=%s&location=%s&type=%s&capacity=%s" % (
-                    date.strftime("%d-%m-%Y"), self.request.get("location"), self.request.get("type"),
-                    self.request.get("capacity")))
             try:
                 date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
             except ValueError:
