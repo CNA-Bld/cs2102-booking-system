@@ -180,7 +180,7 @@ class Book(ndb.Model):
 
     @classmethod
     def find_booking(cls, facility, date):
-        query = cls.query(cls.facility_id == facility.key, cls.date == date, cls.is_cancelled != False)
+        query = cls.query(cls.facility_id == facility.key, cls.date == date, cls.is_cancelled != True)
         return query.fetch()
 
     def check(self):
@@ -197,4 +197,24 @@ class Book(ndb.Model):
             if self.facility_id.get().is_auto_approval:
                 self.is_approved = True
                 self.is_processed = True
+                self.is_cancelled = False
+            else:
+                self.is_approved = False
+                self.is_processed = False
+                self.is_cancelled = False
             self.put()
+
+    def approve(self):
+        self.is_processed = True
+        self.is_approved = True
+        self.put()
+
+    def decline(self):
+        self.is_processed = True
+        self.is_approved = False
+        self.is_cancelled = True
+        self.put()
+
+    def cancel(self):
+        self.is_cancelled = True
+        self.put()

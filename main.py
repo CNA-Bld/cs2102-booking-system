@@ -32,7 +32,6 @@ class MainHandler(webapp2.RequestHandler):
         if user is None:
             self.redirect('/login/')
         elif login.user_session_check(user, key):
-            path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
             try:
                 date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
             except ValueError:
@@ -45,13 +44,11 @@ class MainHandler(webapp2.RequestHandler):
                 capacity = 0
             if location:
                 facilities = models.Facility.apply_filter(location, facility_type, capacity)
-                facilities_dict_list = []
-                for facility in facilities:
-                    f_dict = {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
-                              'price': facility.price_per_hr, 'comment': facility.comment,
-                              'room_number': facility.room_number, 'id': facility.key.id()}
-                    f_dict['availability'] = facility.check_availability(date).inverted().data
-                    facilities_dict_list.append(f_dict)
+                facilities_dict_list = [
+                    {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
+                     'price': facility.price_per_hr, 'comment': facility.comment,
+                     'room_number': facility.room_number, 'id': facility.key.id(),
+                     'availability': facility.check_availability(date).inverted().data} for facility in facilities]
             else:
                 facilities_dict_list = []
             native_values = {'location_list': models.Facility.get_loc_list(),
@@ -60,6 +57,8 @@ class MainHandler(webapp2.RequestHandler):
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list}
             template_values = dict(base_template_values, **native_values)
             self.response.out.write(template_values)
+
+            path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
             # self.response.out.write(template.render(path, template_values))
         else:
             self.redirect('/login/')
