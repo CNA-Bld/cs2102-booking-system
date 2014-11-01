@@ -119,22 +119,16 @@ class Facility(ndb.Model):
     @classmethod
     def apply_filter(cls, location, type, capacity, date):
         query = cls.query()
-        if location:
-            query = query.filter(cls.location == location)
+        query = query.filter(cls.location == location)
         if type:
             query = query.filter(cls.type == type)
-        if capacity:
-            query = query.filter(cls.capacity >= capacity)
-        if date:
-            adv_time = (date - utils.get_today_plus_8()).days
-            query = query.filter(cls.min_adv_time <= adv_time)
-            result = query.fetch()
-            for facility in result:
-                if facility.max_adv_time < adv_time:
-                    result.remove(facility)
-            return result
-        else:
-            return query.fetch()
+        adv_time = (date - utils.get_today_plus_8()).days
+        query = query.filter(cls.min_adv_time <= adv_time)
+        result = query.fetch()
+        for facility in result:
+            if facility.max_adv_time < adv_time or facility.capacity < capacity:
+                result.remove(facility)
+        return result
 
     def check_availability(self, date):
         bookings = Book.find_booking(self, date)

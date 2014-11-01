@@ -29,5 +29,24 @@ indexes:
 - kind: Facility
   properties:
   - name: location
+  - name: min_adv_time
+  - name: capacity
+
+- kind: Facility
+  properties:
+  - name: location
   - name: type
+  - name: capacity
+
+- kind: Facility
+  properties:
+  - name: location
+  - name: type
+  - name: min_adv_time
+
+- kind: Facility
+  properties:
+  - name: location
+  - name: type
+  - name: min_adv_time
   - name: capacity
