@@ -1,251 +1,206 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<!-- Latest compiled and minified CSS -->
-<link href="../static/css/bootstrap.min.css" rel="stylesheet">
-<link href="../static/css/datepicker3.css" rel="stylesheet">
-<link href="../static/css/bootstrap-select.min.css" rel="stylesheet">
+{% block main_body %}
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="../static/js/jquery-2.1.1.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/bootstrap-datepicker.js"></script>
-<script src="../static/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#selectdate input').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true
+            });
 
-<head>
-	<meta http-equiv="Content-Type" content = "text/html; charset=UTF-8">
-	<title>NUS Facility Booking System</title>
-	<script type="text/javascript">
-	$(document).ready(function () {
-		$('#selectdate input').datepicker({
-			format: "dd-mm-yyyy",
-			todayHighlight: true
-		});
+            $('.selectpicker').selectpicker();
+        });
+    </script>
 
-		$('.selectpicker').selectpicker();
-	});
+    <div class="container" role="main">
 
-	</script>
-</head>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Search</h3>
+            </div>
+            <div class="panel-body">
 
-<body>
-
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">NUS Facility Booking + </a>
-			</div>
-			<div id="navbar" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">New Booking</a></li>
-					<li><a href="#about">My Booking</a></li>
-					<li><a href="#contact">Facilities</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">User<span class="caret"></span></a>
-						<ul class="dropdown-menu navbar-right" role="menu">
-							<li><a href="#">User Info</a></li>
-							<li><a href="#">Log Out</a></li>
-
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</nav>      
-
-		<div class="container">
-			<div class="row clearfix">
-				<div class="col-md-12 column">
-					<br><br>
+                <form name="filter" action="" method="get" class="form-horizontal" role="form">
 
 
-					<br></br>
+                    <div class="form-group" id="selectdate">
+                        <label for="iddate" class="col-sm-2 control-label">Date</label>
+
+                        <div class="col-sm-10">
+                            <input id="iddate" type="text" name="date" class="form-control" required="true"
+                                   autocomplete="false" value="{{ selected_date }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idlocation" class="col-sm-2 control-label">Location</label>
+
+                        <div class="col-sm-10">
+                            <select id="idlocation" name="location" class="selectpicker form-control">
+                                {% for location in location_list %}
+                                    <option value="{{ location }}"
+                                            {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
 
 
-					<br><br>
+                    <div class="form-group">
+                        <label for="idtype" class="col-sm-2 control-label">Type</label>
 
-					<form name="filter" action="" method="get" class="form-inline" role="form">
-
-
-
-						<div class="form-group" id = "selectdate" >
-							<label for="iddate" >Date</label>
-							<input  id = "iddate" type="text" name = "date" class="form-control" required = "true">
-						</div>
-
-					<div class="form-group">
-						<label for="idlocation">Location</label>
-						<select id = "idlocation" name = "location" class="selectpicker">
-                            {% for location in location_list %}
-							    <option value = "{{ location }}" {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
-							{% endfor %}
-						</select>
-					</div>
+                        <div class="col-sm-10">
+                            <select id="idtype" name="type" class="selectpicker form-control">
+                                <option value="">Any</option>
+                                {% for type in type_list %}
+                                    <option value="{{ type }}"
+                                            {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
 
 
-					<div class="form-group">
-						<label for="idtype">Type:</label>
-						<select id = "idtype" name = "type" class="selectpicker">
-							{% for type in type_list %}
-							    <option value = "{{ type }}" {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
-							{% endfor %}
-						</select>
-					</div>
+                    <div class="form-group">
+                        <label for="idcapacity" class="col-sm-2 control-label">Capacity</label>
+
+                        <div class="col-sm-10">
+                            <input id="idcapacity" name="capacity" required="true" class="form-control"
+                                   autocomplete="false" {% if selected_capacity > 0 %}
+                                   value="{{ selected_capacity }}" {% endif %}>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-default">Clear</button>
+                        </div>
+                    </div>
 
 
-						<div class="form-group">
-							<label for="idcapacity">Capacity:</label>
-							<input id = "idcapacity" name = "capacity" required = "true" class="form-control" >
-						</div>
-						<br><br>
-
-						<button type="reset" class="btn btn-default">Clear</button> 
-
-						<button type="submit" class="btn btn-default" >Submit</button>
-
-					</form>
+                </form>
 
 
-					<!-- Single button -->
+            </div>
+        </div>
 
-					<br><br>
+        <div class="btn-group" style="align: center;">
+            <button type="submit" class="btn btn-default btn-lg ">
+                -3
+            </button>
+            <button type="submit" class="btn btn-default btn-lg ">
+                -2
+            </button>
+            <button type="submit" class="btn btn-default btn-lg">
+                -1
+            </button>
+            <button type="submit" class="btn btn-info btn-lg">
+                Today
+            </button>
+            <button type="submit" class="btn btn-default btn-lg ">
+                +1
+            </button>
+            <button type="submit" class="btn btn-default btn-lg ">
+                +2
+            </button>
+            <button type="submit" class="btn btn-default btn-lg">
+                +3
+            </button>
 
-					<div class="btn-group" style = "align: center;">
-						<button type="submit" class="btn btn-default btn-lg " >
-							-3 
-						</button>
-						<button type="submit" class="btn btn-default btn-lg " >
-							-2 
-						</button>
-						<button type="submit" class="btn btn-default btn-lg" >
-							-1 
-						</button>
-						<button type="submit" class="btn btn-info btn-lg" >
-							Today 
-						</button>
-						<button type="submit" class="btn btn-default btn-lg " >
-							+1 
-						</button>
-						<button type="submit" class="btn btn-default btn-lg " >
-							+2 
-						</button>
-						<button type="submit" class="btn btn-default btn-lg" >
-							+3 
-						</button>
+        </div>
 
-					</div> 
+        <br><br>
 
-					<br><br>
-
-					<div class="container">
-						<div class="row clearfix">
-							<div class="col-md-12 column">
-								<table class="table">
-									<thead>
-										<tr>
-											<th>
-												Room
-											</th>
-											<th>
-												0:00 
-											</th>
-											<th>
-												----
-											</th>
-											<th>
-												1:00
-											</th>
-											<th>
-												-----
-											</th>
-											<th>
-												2:00
-											</th>
-											<th>
-												-----
-											</th>
-											<th>
-												3:00
-											</th>
-											<th>
-												-----
-											</th>
-											<th>
-												4:00
-											</th>
-											<th>
-												-----
-											</th>
-
-
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-											<td>
-												1
-											</td>
-										</tr>
-										
-										
-										
-										
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>
+                                Room
+                            </th>
+                            <th>
+                                0:00
+                            </th>
+                            <th>
+                                ----
+                            </th>
+                            <th>
+                                1:00
+                            </th>
+                            <th>
+                                -----
+                            </th>
+                            <th>
+                                2:00
+                            </th>
+                            <th>
+                                -----
+                            </th>
+                            <th>
+                                3:00
+                            </th>
+                            <th>
+                                -----
+                            </th>
+                            <th>
+                                4:00
+                            </th>
+                            <th>
+                                -----
+                            </th>
 
 
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                            <td>
+                                1
+                            </td>
+                        </tr>
 
-				</div>
-			</div>
-		</div>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
 
-	</body>
-	</html>
+    </div>
 
-
-
-
-
-
-
-
-
+{% endblock %}

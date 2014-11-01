@@ -25,6 +25,13 @@ def user_session_check(user, key):
     else:
         return False
 
+def user_session_remove(user, key):
+    try:
+        if user_session_check(user, key):
+            memcache.delete(SESSION_PREFIX + user)
+    except:
+        pass
+
 
 def get_user_info(token):
     json_data = urlfetch.fetch(url='https://ivle.nus.edu.sg/api/Lapi.svc/Profile_View?APIKey=%s&AuthToken=%s' % (IVLE_API_KEY, token), method=urlfetch.GET).content

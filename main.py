@@ -24,6 +24,13 @@ class LoginHandler(webapp2.RequestHandler):
             self.redirect('https://ivle.nus.edu.sg/api/login/?apikey=%s&url=%s' % (
                 IVLE_API_KEY, APP_PATH + 'login/callback/'))
 
+class LogoutHandler(webapp2.RequestHandler):
+    def get(self):
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        login.user_session_remove(user, key)
+        self.redirect('/')
+
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -54,7 +61,7 @@ class MainHandler(webapp2.RequestHandler):
             native_values = {'location_list': models.Facility.get_loc_list(),
                              'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type,
-                             'selected_capacity': capacity, 'facility_list': facilities_dict_list}
+                             'selected_capacity': capacity, 'facility_list': facilities_dict_list, 'user': user}
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
@@ -73,6 +80,7 @@ class InitHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
+                                  ('/logout/.*', LogoutHandler),
                                   ('/init/.*', InitHandler),
                                   ('/.*', MainHandler),
                               ], debug=True)
