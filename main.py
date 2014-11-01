@@ -55,7 +55,7 @@ class MainHandler(webapp2.RequestHandler):
             else:
                 facilities_dict_list = []
             native_values = {'location_list': models.Facility.get_loc_list(),
-                             'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%y"),
+                             'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list}
             template_values = dict(base_template_values, **native_values)
