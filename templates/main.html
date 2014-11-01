@@ -87,13 +87,13 @@
 
             <nav>
                 <ul class="pager">
-                    <li><a href="#">&larr; 3</a></li>
-                    <li><a href="#">&larr; 2</a></li>
-                    <li><a href="#">&larr; 1</a></li>
+                    <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
+                    <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
+                    <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
                     <li class="disabled"><a href="#">Today</a></li>
-                    <li><a href="#">1 &rarr;</a></li>
-                    <li><a href="#">2 &rarr;</a></li>
-                    <li><a href="#">3 &rarr;</a></li>
+                    <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
+                    <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
+                    <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
                 </ul>
             </nav>
 

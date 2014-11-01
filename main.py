@@ -39,6 +39,12 @@ class MainHandler(webapp2.RequestHandler):
         if user is None:
             self.redirect('/login/')
         elif login.user_session_check(user, key):
+            if self.request.get('offset'):
+                date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+                date += datetime.timedelta(days=int(self.request.get('offset')))
+                self.redirect("/?date=%s&location=%s&type=%s&capacity=%s" % (
+                    date.strftime("%d-%m-%Y"), self.request.get("location"), self.request.get("type"),
+                    self.request.get("capacity")))
             try:
                 date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
             except ValueError:
@@ -61,7 +67,7 @@ class MainHandler(webapp2.RequestHandler):
             else:
                 is_querying = False
                 facilities_dict_list = []
-            native_values = {'location_list': models.Facility.get_loc_list(),
+            native_values = {'location_list': models.Facility.get_loc_list(), 'query_string': self.request.query_string,
                              'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type, 'is_querying': is_querying,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list, 'user': user}
