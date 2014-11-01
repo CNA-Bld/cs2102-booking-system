@@ -33,7 +33,10 @@ class MainHandler(webapp2.RequestHandler):
             self.redirect('/login/')
         elif login.user_session_check(user, key):
             path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
-            date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+            try:
+                date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+            except ValueError:
+                date = datetime.date.today()
             location = self.request.get('location')
             facility_type = self.request.get('type')
             try:
