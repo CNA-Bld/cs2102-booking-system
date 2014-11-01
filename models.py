@@ -162,6 +162,9 @@ class Facility(ndb.Model):
                 type_list.append(f.type)
         return type_list
 
+    def to_string(self):
+        return "%s %s (%s)" % (self.location, self.room_number, self.type)
+
 
 class Book(ndb.Model):
     date = ndb.DateProperty()
@@ -190,6 +193,11 @@ class Book(ndb.Model):
     @classmethod
     def find_booking(cls, facility, date):
         query = cls.query(cls.facility_id == facility.key, cls.date == date, cls.is_cancelled != True)
+        return query.fetch()
+
+    @classmethod
+    def find_user_booking(cls, user):
+        query = cls.query(cls.user_id == user.key)
         return query.fetch()
 
     def check(self):

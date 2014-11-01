@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block main_body %}
+
+    <div class="container" role="main">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Facility</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for booking in booking_list %}
+                <tr>
+                    <td>{{ booking.facility }}</td>
+                    <td>{{ booking.date }}</td>
+                    <td>
+                        {% if booking.is_cancelled %}
+                            Cancelled
+                        {% else %}
+                            {% if booking.is_processed %}
+                                {% if booking.is_approved %}
+                                    Approved
+                                {% else %}
+                                    Declined
+                                {% endif %}
+                            {% else %}
+                                Processing
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/?cancel={{ booking.id }}" class="btn btn-default" role="button"
+                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

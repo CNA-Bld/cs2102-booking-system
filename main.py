@@ -81,6 +81,30 @@ class MainHandler(webapp2.RequestHandler):
             self.redirect('/login/')
 
 
+class ManageHandler(webapp2.RequestHandler):
+    def get(self):
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+            bookings = models.Book.find_user_booking(models.User.get_user_by_id(user))
+            bookings_dict_list = [
+                {'facility': booking.facility_id.get().to_string(), 'date': booking.date.strftime("%d-%m-%Y"),
+                 'is_approved': booking.is_approved, 'is_processed': booking.is_processed,
+                 'is_cancelled': booking.is_cancelled, 'is_declined': booking.is_processed and not booking.is_approved,
+                 'id': booking.key.id()} for booking in bookings]
+
+            native_values = {'booking_list': bookings_dict_list, 'user': user}
+            template_values = dict(base_template_values, **native_values)
+            # self.response.out.write(template_values)
+
+            path = os.path.join(os.path.dirname(__file__), 'templates/manage.html')
+            self.response.out.write(template.render(path, template_values))
+        else:
+            self.redirect('/login/')
+
+
 class AdminHandler(webapp2.RequestHandler):
     def get(self):
         template_values = {'user': 'Dummy Admin System'}
@@ -117,9 +141,15 @@ class AdminHandler(webapp2.RequestHandler):
         self.redirect('/admin/')
 
 
+class InitHandler(webapp2.RequestHandler):
+    def get(self):
+        models.Book.init()
+
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
                                   ('/logout/.*', LogoutHandler),
+                                  ('/manage/.*', ManageHandler),
                                   ('/admin/.*', AdminHandler),
+                                  ('/init/', InitHandler),
                                   ('/.*', MainHandler),
                               ], debug=True)
