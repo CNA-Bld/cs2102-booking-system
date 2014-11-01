@@ -33,7 +33,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="./?view={{ booking.id }}" class="btn btn-default btn-xs" role="button">View</a>
+                        <a href="/view_booking/?id={{ booking.id }}" class="btn btn-default btn-xs" role="button">Details</a>
                         <a href="./?cancel={{ booking.id }}" class="btn btn-danger btn-xs" role="button"
                                 {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
                     </td>

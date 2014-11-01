@@ -2,6 +2,7 @@ import datetime
 
 import webapp2
 from google.appengine.ext.webapp import template
+from google.appengine.api import users
 
 import login
 import models
@@ -105,6 +106,41 @@ class ManageHandler(webapp2.RequestHandler):
             self.redirect('/login/')
 
 
+class ViewBookingHandler(webapp2.RequestHandler):
+    def get(self):
+        if not users.is_current_user_admin():
+            user = self.request.cookies.get('user')
+            key = self.request.cookies.get('session_key')
+            if user is None:
+                self.redirect('/login/')
+            elif login.user_session_check(user, key):
+                booking = models.Book.get_by_book_id(int(self.request.get('id')))
+                if booking.user_id.get().user_id != user:
+                    self.response.set_status(403, "Unauthorized!")
+                    return
+            else:
+                self.redirect('/login/')
+        else:
+            booking = models.Book.get_by_book_id(int(self.request.get('id')))
+            user = "Dummy Admin System"
+        booking_user = booking.user_id.get()
+        native_values = {'user': user, 'facility': booking.facility_id.get().to_string(),
+                         'date': booking.date.strftime("%d-%m-%Y"),
+                         'is_approved': booking.is_approved, 'is_processed': booking.is_processed,
+                         'is_cancelled': booking.is_cancelled,
+                         'is_declined': booking.is_processed and not booking.is_approved,
+                         'id': booking.key.id(), 'comment': booking.comment, 'purpose': booking.purpose,
+                         'user_id': booking_user.user_id, 'user_name': booking_user.name,
+                         'user_faculty': booking_user.faculty, 'user_email': booking_user.email,
+                         'is_admin': users.is_current_user_admin()}
+
+        template_values = dict(base_template_values, **native_values)
+        # self.response.out.write(template_values)
+
+        path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
+        self.response.out.write(template.render(path, template_values))
+
+
 class AdminHandler(webapp2.RequestHandler):
     def get(self):
         template_values = {'user': 'Dummy Admin System'}
@@ -145,10 +181,12 @@ class InitHandler(webapp2.RequestHandler):
     def get(self):
         models.Book.init()
 
+
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
                                   ('/logout/.*', LogoutHandler),
                                   ('/manage/.*', ManageHandler),
+                                  ('/view_booking/.*', ViewBookingHandler),
                                   ('/admin/.*', AdminHandler),
                                   ('/init/', InitHandler),
                                   ('/.*', MainHandler),

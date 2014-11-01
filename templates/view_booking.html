@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block main_body %}
+
+    <div class="container" role="main">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Booking No.</th>
+                <th>{{ id }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Facility</td>
+                <td>{{ facility }}</td>
+            </tr>
+            <tr>
+                <td>Date</td>
+                <td>{{ date }}</td>
+            </tr>
+            <tr>
+                <td>Purpose</td>
+                <td>{{ purpose }}</td>
+            </tr>
+            <tr>
+                <td>Comment</td>
+                <td>{{ comment }}</td>
+            </tr>
+            <tr>
+                <td>User</td>
+                <td>{{ user_name }} [{{ user_email }}] ({{ user_faculty }})</td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>
+                    {% if is_processed %}
+                        {% if is_approved %}
+                            <span class="label label-success">Approved</span>
+                        {% else %}
+                            <span class="label label-danger">Declined</span>
+                        {% endif %}
+                    {% else %}
+                        {% if is_cancelled %}
+                            <span class="label label-default">Cancelled</span>
+                        {% else %}
+                            <span class="label label-primary">Processing</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% if is_admin and not is_processed and not is_cancelled %}
+                <tr>
+                    <td>Action</td>
+                    <td>
+                        <a href="/admin/?do=approve&id={{ id }}" class="btn btn-success btn-xs" role="button">Approve</a>
+                        <a href="/admin/?do=decline&id={{ id }}" class="btn btn-danger btn-xs" role="button">Decline</a>
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

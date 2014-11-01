@@ -200,6 +200,10 @@ class Book(ndb.Model):
         query = cls.query(cls.user_id == user.key)
         return query.fetch()
 
+    @classmethod
+    def get_by_book_id(cls, book_id):
+        return ndb.Key(cls, book_id).get()
+
     def check(self):
         facility = self.facility_id.get()
         available_time = facility.check_availability(self.date)
