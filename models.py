@@ -45,7 +45,7 @@ class BookTime():
         data = {i: False for i in range(0, 48)}
         for i in range(start*2, end*2):
             data[i] = True
-        return BookTime(data)
+        return BookTime(data).inverted()
 
 
 class User(ndb.Model):
