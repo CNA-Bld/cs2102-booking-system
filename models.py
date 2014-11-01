@@ -5,10 +5,11 @@ from google.appengine.ext import ndb
 
 
 class BookTime():
-    def __init__(self, data={i: False for i in range(0, 48)}, reversed=False):
-        self.data = data
-        if reversed:
-            self.data = {i: not self.data[i] for i in range(0, 48)}
+    def __init__(self, data=None):
+        if data is not None:
+            self.data = data
+        else:
+            self.data = {i: False for i in range(0, 48)}
 
     def __repr__(self):
         return repr(self.data)
@@ -33,6 +34,12 @@ class BookTime():
         for i in range(0, 48):
             inv.data[i] = not self.data[i]
         return inv
+
+    def to_list(self):
+        l = []
+        for i in range(0, 48):
+            l.append(self.data[i])
+        return l
 
 
 class User(ndb.Model):
