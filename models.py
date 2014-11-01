@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from google.appengine.ext import ndb
 
@@ -23,7 +24,15 @@ class BookTime():
         for i in range(0, 48):
             if self.data[i] or other.data[i]:
                 union.data[i] = True
+            else:
+                union.data[i] = False
         return union
+
+    def inverted(self):
+        inv = BookTime()
+        for i in range(0, 48):
+            inv.data[i] = not self.data[i]
+        return inv
 
 
 class User(ndb.Model):
@@ -77,6 +86,24 @@ class Facility(ndb.Model):
     comment = ndb.StringProperty()
 
     @classmethod
+    def init(cls):
+        ins = cls()
+        ins.location = 'COM1'
+        ins.type = 'Programming Lab'
+        ins.room_number = 'B111'
+        ins.is_auto_approval = False
+        ins.weekday_hr = repr(BookTime())
+        ins.sat_hr = repr(BookTime())
+        ins.sun_hr = repr(BookTime())
+        ins.max_time_per_day = 8
+        ins.price_per_hr = 0.0
+        ins.min_adv_time = 0
+        ins.max_adv_time = 7
+        ins.capacity = 40
+        ins.comment = '?'
+        ins.put()
+
+    @classmethod
     def apply_filter(cls, location, type, capacity):
         query = cls.query()
         if location:
@@ -85,21 +112,39 @@ class Facility(ndb.Model):
             query = query.filter(cls.type == type)
         if capacity:
             query = query.filter(cls.capacity >= capacity)
-        return query
+        return query.fetch()
 
     def check_availability(self, date):
         bookings = Book.find_booking(self, date)
         available_time = BookTime()
         for booking in bookings:
-            book_time = BookTime(booking.time)
+            book_time = BookTime(eval(booking.time))
             available_time = available_time.union(book_time)
         if date.weekday() == 5:
-            available_time = available_time.union(self.sat_hr)
+            available_time = available_time.union(BookTime(eval(self.sat_hr)))
         elif date.weekday() == 6:
-            available_time = available_time.union(self.sun_hr)
+            available_time = available_time.union(BookTime(eval(self.sun_hr)))
         else:
-            available_time = available_time.union(self.weekday_hr)
+            available_time = available_time.union(BookTime(eval(self.weekday_hr)))
         return available_time
+
+    @classmethod
+    def get_loc_list(cls):
+        query = cls.query().fetch()
+        loc_list = []
+        for f in query:
+            if f.location not in loc_list:
+                loc_list.append(f.location)
+        return loc_list
+
+    @classmethod
+    def get_type_list(cls):
+        query = cls.query().fetch()
+        type_list = []
+        for f in query:
+            if f.type not in type_list:
+                type_list.append(f.type)
+        return type_list
 
 
 class Book(ndb.Model):
@@ -110,19 +155,31 @@ class Book(ndb.Model):
     is_cancelled = ndb.BooleanProperty()
     is_approved = ndb.BooleanProperty()
     is_processed = ndb.BooleanProperty()
-    managed_by = ndb.StringProperty()
     facility_id = ndb.KeyProperty()
     user_id = ndb.KeyProperty()
 
     @classmethod
+    def init(cls):
+        b = Book()
+        b.date = datetime.date.today()
+        tmp = {i: False for i in range(0, 48)}
+        tmp[16] = True
+        b.time = repr(tmp)
+        b.purpose = 'purpose'
+        b.comment = 'comment'
+        b.facility_id = Facility.query().get().key
+        b.user_id = User.query().get().key
+        b.place()
+
+    @classmethod
     def find_booking(cls, facility, date):
-        query = cls.query(cls.facility_id == facility, cls.date == date, is_cancelled == False)
-        return query
+        query = cls.query(cls.facility_id == facility.key, cls.date == date, cls.is_cancelled != False)
+        return query.fetch()
 
     def check(self):
         facility = self.facility_id.get()
         available_time = facility.check_availability(self.date)
-        if available_time.is_conflicted(BookTime(self.time)):
+        if available_time.is_conflicted(BookTime(eval(self.time))):
             return False
         return facility.min_adv_time <= (datetime.date.today() - self.date).days <= facility.max_adv_time
 

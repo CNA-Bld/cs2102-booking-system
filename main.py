@@ -1,7 +1,15 @@
+import os
+import datetime
+
 import webapp2
+from google.appengine.ext.webapp import template
 
 import login
+import models
 from const import *
+
+
+base_template_values = {}
 
 
 class LoginHandler(webapp2.RequestHandler):
@@ -19,9 +27,48 @@ class LoginHandler(webapp2.RequestHandler):
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        pass
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+            path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
+            date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+            location = self.request.get('location')
+            facility_type = self.request.get('type')
+            try:
+                capacity = int(self.request.get('capacity'))
+            except ValueError:
+                capacity = 0
+            if location:
+                facilities = models.Facility.apply_filter(location, facility_type, capacity)
+                facilities_dict_list = []
+                for facility in facilities:
+                    f_dict = {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
+                              'price': facility.price_per_hr, 'comment': facility.comment,
+                              'room_number': facility.room_number}
+                    f_dict['availability'] = repr(facility.check_availability(date).inverted())
+                    facilities_dict_list.append(f_dict)
+            else:
+                facilities_dict_list = []
+            native_values = {'location_list': models.Facility.get_loc_list(),
+                             'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%y"),
+                             'selected_location': location, 'selected_type': facility_type,
+                             'selected_capacity': capacity, 'facility_list': facilities_dict_list}
+            template_values = dict(base_template_values, **native_values)
+            print template_values
+            self.response.out.write(template.render(path, template_values))
+        else:
+            self.redirect('/login/')
+
+
+class InitHandler(webapp2.RequestHandler):
+    def get(self):
+        models.Book.init()
+
 
 app = webapp2.WSGIApplication([
-                                  ('/', MainHandler),
-                                  ('/login/.*', LoginHandler)
+                                  ('/login/.*', LoginHandler),
+                                  ('/init/.*', InitHandler),
+                                  ('/.*', MainHandler),
                               ], debug=True)
