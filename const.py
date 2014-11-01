@@ -1,0 +1,4 @@
+APP_PATH = 'http://127.0.0.1:8080/'
+SESSION_PREFIX = 'session_'
+
+IVLE_API_KEY = "rZ43ZYiyDPeEHlzz40zJS"
