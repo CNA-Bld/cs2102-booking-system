@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main_body %}
+    <div class="container" role="main">
+
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" class="active"><a href=".">Home</a></li>
+            <li role="presentation"><a href="?do=create_facility">Create Facility</a></li>
+            <li role="presentation"><a href="?do=create_facility">Manage Facility</a></li>
+            <li role="presentation"><a href="?do=create_facility">Manage Bookings</a></li>
+        </ul>
+
+        {% block admin_body %}
+        {% endblock %}
+
+    </div>
+{% endblock %}

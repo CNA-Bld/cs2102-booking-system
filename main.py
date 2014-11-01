@@ -24,6 +24,7 @@ class LoginHandler(webapp2.RequestHandler):
             self.redirect('https://ivle.nus.edu.sg/api/login/?apikey=%s&url=%s' % (
                 IVLE_API_KEY, APP_PATH + 'login/callback/'))
 
+
 class LogoutHandler(webapp2.RequestHandler):
     def get(self):
         user = self.request.cookies.get('user')
@@ -50,6 +51,7 @@ class MainHandler(webapp2.RequestHandler):
             except ValueError:
                 capacity = 0
             if location:
+                is_querying = True
                 facilities = models.Facility.apply_filter(location, facility_type, capacity)
                 facilities_dict_list = [
                     {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
@@ -57,15 +59,14 @@ class MainHandler(webapp2.RequestHandler):
                      'room_number': facility.room_number, 'id': facility.key.id(),
                      'availability': facility.check_availability(date).inverted().data} for facility in facilities]
             else:
+                is_querying = False
                 facilities_dict_list = []
             native_values = {'location_list': models.Facility.get_loc_list(),
                              'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
-                             'selected_location': location, 'selected_type': facility_type,
+                             'selected_location': location, 'selected_type': facility_type, 'is_querying': is_querying,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list, 'user': user}
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
-
-            print template_values
 
             path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
             self.response.out.write(template.render(path, template_values))
@@ -73,14 +74,45 @@ class MainHandler(webapp2.RequestHandler):
             self.redirect('/login/')
 
 
-class InitHandler(webapp2.RequestHandler):
+class AdminHandler(webapp2.RequestHandler):
     def get(self):
-        models.Book.init()
+        template_values = {'user': 'Dummy Admin System'}
+        if self.request.get('do') == 'create_facility':
+            path = os.path.join(os.path.dirname(__file__), 'templates/admin_create_facility.html')
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
+        self.response.out.write(template.render(path, template_values))
+
+    def post(self):
+        if self.request.get('do') == 'create_facility':
+            facility = models.Facility()
+            facility.location = self.request.get('location')
+            facility.type = self.request.get('type')
+            facility.room_number = self.request.get('room_number')
+            if self.request.get('is_auto_approval'):
+                facility.is_auto_approval = True
+            else:
+                facility.is_auto_approval = False
+            facility.max_time_per_day = int(self.request.get('max_time_per_day'))
+            print self.request.get('price_per_hr')
+            facility.price_per_hr = float(self.request.get('price_per_hr'))
+            facility.min_adv_time = int(self.request.get('min_adv_time'))
+            facility.max_adv_time = int(self.request.get('max_adv_time'))
+            facility.capacity = int(self.request.get('capacity'))
+            facility.comment = self.request.get('comment')
+            facility.weekday_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('weekday_hr_start')),
+                                                                       int(self.request.get('weekday_hr_end'))))
+            facility.sat_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sat_hr_start')),
+                                                                   int(self.request.get('sat_hr_end'))))
+            facility.sun_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sun_hr_start')),
+                                                                   int(self.request.get('sun_hr_end'))))
+            facility.put()
+        self.redirect('/admin/')
 
 
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
                                   ('/logout/.*', LogoutHandler),
-                                  ('/init/.*', InitHandler),
+                                  ('/admin/.*', AdminHandler),
                                   ('/.*', MainHandler),
                               ], debug=True)

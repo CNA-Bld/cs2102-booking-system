@@ -22,8 +22,6 @@
             <div class="panel-body">
 
                 <form name="filter" action="" method="get" class="form-horizontal" role="form">
-
-
                     <div class="form-group" id="selectdate">
                         <label for="iddate" class="col-sm-2 control-label">Date</label>
 
@@ -66,7 +64,7 @@
                         <label for="idcapacity" class="col-sm-2 control-label">Capacity</label>
 
                         <div class="col-sm-10">
-                            <input id="idcapacity" name="capacity" required="true" class="form-control"
+                            <input id="idcapacity" name="capacity" class="form-control"
                                    autocomplete="false" {% if selected_capacity > 0 %}
                                    value="{{ selected_capacity }}" {% endif %}>
                         </div>
@@ -79,128 +77,112 @@
                         </div>
                     </div>
 
-
                 </form>
 
 
             </div>
         </div>
 
-        <div class="btn-group" style="align: center;">
-            <button type="submit" class="btn btn-default btn-lg ">
-                -3
-            </button>
-            <button type="submit" class="btn btn-default btn-lg ">
-                -2
-            </button>
-            <button type="submit" class="btn btn-default btn-lg">
-                -1
-            </button>
-            <button type="submit" class="btn btn-info btn-lg">
-                Today
-            </button>
-            <button type="submit" class="btn btn-default btn-lg ">
-                +1
-            </button>
-            <button type="submit" class="btn btn-default btn-lg ">
-                +2
-            </button>
-            <button type="submit" class="btn btn-default btn-lg">
-                +3
-            </button>
+        {% if is_querying %}
 
-        </div>
+            <nav>
+                <ul class="pager">
+                    <li><a href="#">&larr; 3</a></li>
+                    <li><a href="#">&larr; 2</a></li>
+                    <li><a href="#">&larr; 1</a></li>
+                    <li class="disabled"><a href="#">Today</a></li>
+                    <li><a href="#">1 &rarr;</a></li>
+                    <li><a href="#">2 &rarr;</a></li>
+                    <li><a href="#">3 &rarr;</a></li>
+                </ul>
+            </nav>
 
-        <br><br>
-
-        <div class="container">
-            <div class="row clearfix">
-                <div class="col-md-12 column">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>
-                                Room
-                            </th>
-                            <th>
-                                0:00
-                            </th>
-                            <th>
-                                ----
-                            </th>
-                            <th>
-                                1:00
-                            </th>
-                            <th>
-                                -----
-                            </th>
-                            <th>
-                                2:00
-                            </th>
-                            <th>
-                                -----
-                            </th>
-                            <th>
-                                3:00
-                            </th>
-                            <th>
-                                -----
-                            </th>
-                            <th>
-                                4:00
-                            </th>
-                            <th>
-                                -----
-                            </th>
+            {% if facility_list %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            Room
+                        </th>
+                        <th>
+                            0:00
+                        </th>
+                        <th>
+                            ----
+                        </th>
+                        <th>
+                            1:00
+                        </th>
+                        <th>
+                            -----
+                        </th>
+                        <th>
+                            2:00
+                        </th>
+                        <th>
+                            -----
+                        </th>
+                        <th>
+                            3:00
+                        </th>
+                        <th>
+                            -----
+                        </th>
+                        <th>
+                            4:00
+                        </th>
+                        <th>
+                            -----
+                        </th>
 
 
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                1
-                            </td>
-                        </tr>
-
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for facility in facility_list %}
+                    <tr>
+                        <td>
+                            {{ facility.location }} {{ facility.room_number }}<br>
+                            {{ facility.type }} w/ {{ facility.capacity }} pax
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            1
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
+            {% endif %}
+        {% endif %}
     </div>
 
 {% endblock %}
