@@ -5,6 +5,7 @@ from google.appengine.ext.webapp import template
 
 import login
 import models
+import utils
 from const import *
 
 
@@ -48,7 +49,7 @@ class MainHandler(webapp2.RequestHandler):
             try:
                 date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
             except ValueError:
-                date = datetime.date.today()
+                date = utils.get_today_plus_8()
             location = self.request.get('location')
             facility_type = self.request.get('type')
             try:

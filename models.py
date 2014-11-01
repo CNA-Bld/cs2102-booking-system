@@ -1,8 +1,7 @@
 import datetime
-import json
-
 from google.appengine.ext import ndb
 
+import utils
 
 class BookTime():
     def __init__(self, data=None):
@@ -127,7 +126,7 @@ class Facility(ndb.Model):
         if capacity:
             query = query.filter(cls.capacity >= capacity)
         if date:
-            adv_time = (date - datetime.date.today()).days
+            adv_time = (date - utils.get_today_plus_8()).days
             query = query.filter(cls.min_adv_time <= adv_time)
             result = query.fetch()
             for facility in result:
@@ -184,7 +183,7 @@ class Book(ndb.Model):
     @classmethod
     def init(cls):
         b = Book()
-        b.date = datetime.date.today()
+        b.date = utils.get_today_plus_8()
         tmp = {i: False for i in range(0, 48)}
         tmp[16] = True
         b.time = repr(tmp)
@@ -204,7 +203,7 @@ class Book(ndb.Model):
         available_time = facility.check_availability(self.date)
         if available_time.is_conflicted(BookTime(eval(self.time))):
             return False
-        return facility.min_adv_time <= (self.date - datetime.date.today()).days <= facility.max_adv_time
+        return facility.min_adv_time <= (self.date - utils.get_today_plus_8()).days <= facility.max_adv_time
 
     def place(self):
         if not self.check():
