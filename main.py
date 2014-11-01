@@ -57,7 +57,7 @@ class MainHandler(webapp2.RequestHandler):
                 capacity = 0
             if location:
                 is_querying = True
-                facilities = models.Facility.apply_filter(location, facility_type, capacity)
+                facilities = models.Facility.apply_filter(location, facility_type, capacity, date)
                 facilities_dict_list = [
                     {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
                      'price': facility.price_per_hr, 'comment': facility.comment,
