@@ -14,12 +14,13 @@
                         <h4 class="modal-title" id="myModalLabel">Confirm Cancellation</h4>
                     </div>
                     <div class="modal-body">
-                        Are you sure to cancel booking for {{ booking.facility }} on {{ booking.date }}?
+                        <div>Sure to cancel booking for {{ booking.facility }} on {{ booking.date }}?</div>
+                        <div>This cannot be undone.</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <a href="./?cancel={{ booking.id }}" class="btn btn-danger" role="button"
-                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
+                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Confirm</a>
                     </div>
                 </div>
             </div>
