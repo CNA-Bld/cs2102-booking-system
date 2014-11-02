@@ -251,6 +251,7 @@ class Book(ndb.Model):
     def approve(self):
         self.is_processed = True
         self.is_approved = True
+        self.is_cancelled = False
         self.put()
 
     def decline(self):
@@ -262,4 +263,5 @@ class Book(ndb.Model):
     def cancel(self):
         self.is_cancelled = True
         self.is_processed = False
+        self.is_approved = False
         self.put()

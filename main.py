@@ -161,6 +161,14 @@ class AdminHandler(webapp2.RequestHandler):
         elif self.request.get('do') == 'update_facility':
             template_values['facility'] = models.Facility.get_by_facility_id(int(self.request.get('id'))).to_dict()
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_update_facility.html')
+        elif self.request.get('do') == 'approve_booking':
+            models.Book.get_by_book_id(int(self.request.get('id'))).approve()
+            self.redirect('./?do=manage_booking')
+            return
+        elif self.request.get('do') == 'decline_booking':
+            models.Book.get_by_book_id(int(self.request.get('id'))).decline()
+            self.redirect('./?do=manage_booking')
+            return
         else:
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
         self.response.out.write(template.render(path, template_values))

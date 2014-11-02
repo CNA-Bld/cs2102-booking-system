@@ -49,12 +49,14 @@
                     {% endif %}
                 </td>
             </tr>
-            {% if is_admin and not is_processed and not is_cancelled %}
+            {% if is_admin %}
                 <tr>
                     <td>Action</td>
                     <td>
-                        <a href="/admin/?do=approve&id={{ id }}" class="btn btn-success btn-xs" role="button">Approve</a>
-                        <a href="/admin/?do=decline&id={{ id }}" class="btn btn-danger btn-xs" role="button">Decline</a>
+                        <a href="/admin/?do=approve_booking&id={{ id }}" class="btn btn-success btn-xs"
+                           role="button" {% if is_cancelled and not is_processed %}disabled="disabled"{% endif %}>Approve</a>
+                        <a href="/admin/?do=decline_booking&id={{ id }}" class="btn btn-danger btn-xs"
+                           role="button" {% if is_cancelled and not is_processed %}disabled="disabled"{% endif %}>Decline</a>
                     </td>
                 </tr>
             {% endif %}
