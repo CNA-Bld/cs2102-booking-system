@@ -52,11 +52,7 @@
                 {% for facility in facility_list %}
                     {% for timeslot in facility.availability %}
                         [ '{{ facility.type }} {{ facility.room_number }}', '/add_booking/?id={{ facility.id }}&date={{ selected_date }}', '\
-                                {% if facility.is_auto_approval %}\
-                                    [Auto Approval]\
-                                {% else %}\
-                                    [Manual Approval]\
-                                {% endif %}\
+                                {% if facility.is_auto_approval %}[Auto Approval]{% else %}[Manual Approval]{% endif %}\
                         Capacity: {{ facility.capacity }}' , {{ timeslot }}],
                     {% endfor %}
                 {% endfor %}
@@ -66,6 +62,7 @@
             view.setColumns([0, 2, 3, 4]);
 
             var options = {
+                height: 42 * {{ facility_list|length }} -1 + 50,
                 timeline: {showBarLabels: false, singleColor: '#a2ded0'},
             };
 
@@ -158,18 +155,18 @@
         </div>
 
         {% if is_querying %}
+            <nav>
+                <ul class="pager">
+                    <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
+                    <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
+                    <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
+                    <li class="disabled"><a href="#">{{ selected_date }}</a></li>
+                    <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
+                    <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
+                    <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
+                </ul>
+            </nav>
             {% if facility_list %}
-                <nav>
-                    <ul class="pager">
-                        <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
-                        <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
-                        <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
-                        <li class="disabled"><a href="#">{{ selected_date }}</a></li>
-                        <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
-                        <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
-                        <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
-                    </ul>
-                </nav>
                 <div id="timeline"></div>
             {% else %}
                 <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>

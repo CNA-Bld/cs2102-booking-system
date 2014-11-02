@@ -69,6 +69,7 @@ class MainHandler(webapp2.RequestHandler):
                                                                  facility.check_availability(
                                                                      date).inverted().to_tuple_list()]})
                     for facility in facilities]
+                facilities_dict_list = [facility for facility in facilities_dict_list if facility['availability']]
                 facilities_dict_list.sort(key=lambda x: x['location'] + x['type'] + x['room_number'])
             else:
                 is_querying = False
