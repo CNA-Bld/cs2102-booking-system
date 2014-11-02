@@ -1,7 +1,7 @@
 import datetime
 
 import webapp2
-from google.appengine.ext.webapp import template
+import jinja2
 
 import login
 import models
@@ -10,6 +10,11 @@ from const import *
 
 
 base_template_values = {}
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/')),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 
 class LoginHandler(webapp2.RequestHandler):
@@ -75,8 +80,8 @@ class MainHandler(webapp2.RequestHandler):
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
-            path = os.path.join(os.path.dirname(__file__), 'templates/main.html')
-            self.response.out.write(template.render(path, template_values))
+            template = JINJA_ENVIRONMENT.get_template('main.html')
+            self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
 
@@ -102,8 +107,8 @@ class ManageHandler(webapp2.RequestHandler):
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
-            path = os.path.join(os.path.dirname(__file__), 'templates/manage.html')
-            self.response.out.write(template.render(path, template_values))
+            template = JINJA_ENVIRONMENT.get_template('manage.html')
+            self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
 
@@ -124,8 +129,8 @@ class ViewBookingHandler(webapp2.RequestHandler):
 
             template_values = dict(base_template_values, **native_values)
 
-            path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
-            self.response.out.write(template.render(path, template_values))
+            template = JINJA_ENVIRONMENT.get_template('view_booking.html')
+            self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
             return
@@ -135,13 +140,13 @@ class AdminHandler(webapp2.RequestHandler):
     def get(self):
         template_values = {'user': 'Dummy Admin System'}
         if self.request.get('do') == 'create_facility':
-            path = os.path.join(os.path.dirname(__file__), 'templates/admin_create_facility.html')
+            template = JINJA_ENVIRONMENT.get_template('admin_create_facility.html')
         elif self.request.get('do') == 'manage_facility':
             template_values['facility_list'] = [facility.to_dict() for facility in models.Facility.query().fetch()]
-            path = os.path.join(os.path.dirname(__file__), 'templates/admin_manage_facility.html')
+            template = JINJA_ENVIRONMENT.get_template('admin_manage_facility.html')
         elif self.request.get('do') == 'update_facility':
             template_values['facility'] = models.Facility.get_by_facility_id(int(self.request.get('id'))).to_dict()
-            path = os.path.join(os.path.dirname(__file__), 'templates/admin_update_facility.html')
+            template = JINJA_ENVIRONMENT.get_template('admin_update_facility.html')
         elif self.request.get('do') == 'approve_booking':
             models.Book.get_by_book_id(int(self.request.get('id'))).approve()
             self.redirect('./?do=manage_booking')
@@ -153,14 +158,14 @@ class AdminHandler(webapp2.RequestHandler):
         elif self.request.get('do') == 'manage_booking':
             template_values['booking_list'] = [book.to_dict() for book in
                                                models.Book.query().order(-models.Book.place_time).fetch()]
-            path = os.path.join(os.path.dirname(__file__), 'templates/admin_manage_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('admin_manage_booking.html')
         elif self.request.get('do') == 'view_booking':
             template_values['booking'] = models.Book.get_by_book_id(int(self.request.get('id'))).to_dict()
             template_values['is_admin'] = True
-            path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('view_booking.html')
         else:
-            path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
-        self.response.out.write(template.render(path, template_values))
+            template = JINJA_ENVIRONMENT.get_template('admin_main.html')
+        self.response.write(template.render(template_values))
 
     def post(self):
         if self.request.get('do') == 'update_facility':
