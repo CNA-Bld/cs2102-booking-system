@@ -2,7 +2,6 @@ import datetime
 
 import webapp2
 from google.appengine.ext.webapp import template
-from google.appengine.api import users
 
 import login
 import models
@@ -111,32 +110,25 @@ class ManageHandler(webapp2.RequestHandler):
 
 class ViewBookingHandler(webapp2.RequestHandler):
     def get(self):
-        if not users.is_current_user_admin():
-            user = self.request.cookies.get('user')
-            key = self.request.cookies.get('session_key')
-            if user is None:
-                self.redirect('/login/')
-                return
-            elif login.user_session_check(user, key):
-                booking = models.Book.get_by_book_id(int(self.request.get('id')))
-                if booking.user_id.get().user_id != user:
-                    self.response.set_status(403, "Unauthorized!")
-                    return
-            else:
-                self.redirect('/login/')
-                return
-        else:
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+            return
+        elif login.user_session_check(user, key):
             booking = models.Book.get_by_book_id(int(self.request.get('id')))
-            user = "Dummy Admin System"
-        booking_user = booking.user_id.get()
-        native_values = {'user': user, 'booking': booking.to_dict(),
-                         'is_admin': users.is_current_user_admin()}
+            if booking.user_id.get().user_id != user:
+                self.response.set_status(403, "Unauthorized!")
+                return
+            native_values = {'user': user, 'booking': booking.to_dict(), 'is_admin': False}
 
-        template_values = dict(base_template_values, **native_values)
-        # self.response.out.write(template_values)
+            template_values = dict(base_template_values, **native_values)
 
-        path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
-        self.response.out.write(template.render(path, template_values))
+            path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
+            self.response.out.write(template.render(path, template_values))
+        else:
+            self.redirect('/login/')
+            return
 
 
 class AdminHandler(webapp2.RequestHandler):
@@ -159,8 +151,13 @@ class AdminHandler(webapp2.RequestHandler):
             self.redirect('./?do=manage_booking')
             return
         elif self.request.get('do') == 'manage_booking':
-            template_values['booking_list'] = [book.to_dict() for book in models.Book.query().order(-models.Book.place_time).fetch()]
+            template_values['booking_list'] = [book.to_dict() for book in
+                                               models.Book.query().order(-models.Book.place_time).fetch()]
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_manage_booking.html')
+        elif self.request.get('do') == 'view_booking':
+            template_values['booking'] = models.Book.get_by_book_id(int(self.request.get('id'))).to_dict()
+            template_values['is_admin'] = True
+            path = os.path.join(os.path.dirname(__file__), 'templates/view_booking.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
         self.response.out.write(template.render(path, template_values))
