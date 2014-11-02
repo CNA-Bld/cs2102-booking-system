@@ -57,6 +57,20 @@ class BookTime():
                 end = i / 2
         return {'start': start, 'end': end}
 
+    def to_tuple_list(self):
+        tuple_list = []
+        if self.data[0]:
+            curr_start = 0
+        for i in range(1, 48):
+            if self.data[i] and not self.data[i-1]:
+                curr_start = i
+            if not self.data[i] and self.data[i-1]:
+                curr_end = i
+                tuple_list.append((curr_start, curr_end))
+        if self.data[47]:
+            tuple_list.append((curr_start, 48))
+        return tuple_list
+
 
 class User(ndb.Model):
     user_id = ndb.StringProperty()
