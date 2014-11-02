@@ -1,7 +1,7 @@
-import datetime
 from google.appengine.ext import ndb
 
 import utils
+
 
 class BookTime():
     def __init__(self, data=None):
@@ -43,9 +43,19 @@ class BookTime():
     @classmethod
     def create_opening_hours(cls, start, end):
         data = {i: False for i in range(0, 48)}
-        for i in range(start*2, end*2):
+        for i in range(start * 2, end * 2):
             data[i] = True
         return BookTime(data).inverted()
+
+    def get_opening_hours(self):
+        start = 0
+        end = 24
+        for i in range(1, 48):
+            if self.data[i] is True and self.data[i - 1] is False:
+                start = i / 2
+            if self.data[i] is False and self.data[i - 1] is True:
+                end = i / 2
+        return {'start': start, 'end': end}
 
 
 class User(ndb.Model):
@@ -162,8 +172,21 @@ class Facility(ndb.Model):
                 type_list.append(f.type)
         return type_list
 
+    @classmethod
+    def get_by_facility_id(cls, facility_id):
+        return ndb.Key(cls, facility_id).get()
+
     def to_string(self):
         return "%s %s (%s)" % (self.location, self.room_number, self.type)
+
+    def to_dict(self):
+        return {'location': self.location, 'type': self.type, 'room_number': self.room_number,
+                'is_auto_approval': self.is_auto_approval,
+                'weekday_hr': BookTime(eval(self.weekday_hr)).get_opening_hours(),
+                'sat_hr': BookTime(eval(self.sat_hr)).get_opening_hours(),
+                'sun_hr': BookTime(eval(self.sun_hr)).get_opening_hours(), 'max_time_per_day': self.max_time_per_day,
+                'price_per_hr': self.price_per_hr, 'min_adv_time': self.min_adv_time, 'max_adv_time': self.max_adv_time,
+                'capacity': self.capacity, 'comment': self.comment, 'id': self.key.id()}
 
 
 class Book(ndb.Model):

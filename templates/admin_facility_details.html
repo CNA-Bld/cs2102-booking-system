@@ -1,0 +1,127 @@
+<div class="panel panel-default">
+        <div class="panel-heading">Facility Details</div>
+        <div class="panel-body">
+            <form name="filter" action="?do=update_facility&id={{ facility.id }}" method="post" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="location" class="col-sm-2 control-label">Location</label>
+
+                    <div class="col-sm-10">
+                        <input id="location" type="text" name="location" class="form-control" autocomplete="false" value="{{ facility.location }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type" class="col-sm-2 control-label">Type</label>
+
+                    <div class="col-sm-10">
+                        <input id="type" type="text" name="type" class="form-control" autocomplete="false" value="{{ facility.type }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="room_number" class="col-sm-2 control-label">Room Number</label>
+
+                    <div class="col-sm-10">
+                        <input id="room_number" type="text" name="room_number" class="form-control"
+                               autocomplete="false" value="{{ facility.room_number }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="max_time_per_day" class="col-sm-2 control-label">Max Time per Day</label>
+
+                    <div class="col-sm-10">
+                        <input id="max_time_per_day" type="text" name="max_time_per_day" class="form-control"
+                               autocomplete="false" value="{{ facility.max_time_per_day }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="price_per_hr" class="col-sm-2 control-label">Price per Hour</label>
+
+                    <div class="col-sm-10">
+                        <input id="price_per_hr" type="text" name="price_per_hr" class="form-control"
+                               autocomplete="false" value="{{ facility.price_per_hr }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="min_adv_time" class="col-sm-2 control-label">Minimum Advance Booking Time</label>
+
+                    <div class="col-sm-10">
+                        <input id="min_adv_time" type="text" name="min_adv_time" class="form-control"
+                               autocomplete="false" value="{{ facility.min_adv_time }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="max_adv_time" class="col-sm-2 control-label">Maximum Advance Booking Time</label>
+
+                    <div class="col-sm-10">
+                        <input id="max_adv_time" type="text" name="max_adv_time" class="form-control"
+                               autocomplete="false" value="{{ facility.max_adv_time }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="capacity" class="col-sm-2 control-label">Capacity</label>
+
+                    <div class="col-sm-10">
+                        <input id="capacity" type="text" name="capacity" class="form-control"
+                               autocomplete="false" value="{{ facility.capacity }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="weekday_hr" class="col-sm-2 control-label">Opening Hour on Weekday</label>
+
+                    <div class="col-sm-5">
+                        <input id="weekday_hr" type="text" name="weekday_hr_start" class="form-control"
+                               autocomplete="false" value="{{ facility.weekday_hr.start }}">
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="weekday_hr" type="text" name="weekday_hr_end" class="form-control"
+                               autocomplete="false" value="{{ facility.weekday_hr.end }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sat_hr" class="col-sm-2 control-label">Opening Hour on Saturday</label>
+
+                    <div class="col-sm-5">
+                        <input id="sat_hr" type="text" name="sat_hr_start" class="form-control"
+                               autocomplete="false" value="{{ facility.sat_hr.start }}">
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="sat_hr" type="text" name="sat_hr_end" class="form-control"
+                               autocomplete="false" value="{{ facility.sat_hr.end }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sun_hr" class="col-sm-2 control-label">Opening Hour on Sunday</label>
+
+                    <div class="col-sm-5">
+                        <input id="sun_hr" type="text" name="sun_hr_start" class="form-control"
+                               autocomplete="false" value="{{ facility.sun_hr.start }}">
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="sun_hr" type="text" name="sun_hr_end" class="form-control"
+                               autocomplete="false" value="{{ facility.sun_hr.end }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment" class="col-sm-2 control-label">Comment</label>
+
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="3" name="comment">{{ facility.command }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="is_auto_approval" {% if facility.is_auto_approval %}checked{% endif %}> Auto Approval
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-default">Clear</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

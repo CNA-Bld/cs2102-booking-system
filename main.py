@@ -113,6 +113,7 @@ class ViewBookingHandler(webapp2.RequestHandler):
             key = self.request.cookies.get('session_key')
             if user is None:
                 self.redirect('/login/')
+                return
             elif login.user_session_check(user, key):
                 booking = models.Book.get_by_book_id(int(self.request.get('id')))
                 if booking.user_id.get().user_id != user:
@@ -120,6 +121,7 @@ class ViewBookingHandler(webapp2.RequestHandler):
                     return
             else:
                 self.redirect('/login/')
+                return
         else:
             booking = models.Book.get_by_book_id(int(self.request.get('id')))
             user = "Dummy Admin System"
@@ -146,13 +148,22 @@ class AdminHandler(webapp2.RequestHandler):
         template_values = {'user': 'Dummy Admin System'}
         if self.request.get('do') == 'create_facility':
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_create_facility.html')
+        elif self.request.get('do') == 'manage_facility':
+            template_values['facility_list'] = [facility.to_dict() for facility in models.Facility.query().fetch()]
+            path = os.path.join(os.path.dirname(__file__), 'templates/admin_manage_facility.html')
+        elif self.request.get('do') == 'update_facility':
+            template_values['facility'] = models.Facility.get_by_facility_id(int(self.request.get('id'))).to_dict()
+            path = os.path.join(os.path.dirname(__file__), 'templates/admin_update_facility.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
         self.response.out.write(template.render(path, template_values))
 
     def post(self):
-        if self.request.get('do') == 'create_facility':
-            facility = models.Facility()
+        if self.request.get('do') == 'update_facility':
+            if self.request.get('id'):
+                facility = models.Facility.get_by_facility_id(int(self.request.get('id')))
+            else:
+                facility = models.Facility()
             facility.location = self.request.get('location')
             facility.type = self.request.get('type')
             facility.room_number = self.request.get('room_number')
@@ -174,7 +185,7 @@ class AdminHandler(webapp2.RequestHandler):
             facility.sun_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sun_hr_start')),
                                                                         int(self.request.get('sun_hr_end'))))
             facility.put()
-        self.redirect('/admin/')
+            self.redirect('/admin/?do=manage_facility')
 
 
 class InitHandler(webapp2.RequestHandler):
