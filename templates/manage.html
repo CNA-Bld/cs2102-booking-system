@@ -2,6 +2,31 @@
 
 {% block main_body %}
 
+    {% for booking in booking_list %}
+        {% if not booking.is_cancelled and not booking.isdeclined %}
+        <div class="modal fade" id="cancelModel{{ booking.id }}" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span
+                                aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Confirm Cancellation</h4>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure to cancel booking for {{ booking.facility }} on {{ booking.date }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <a href="./?cancel={{ booking.id }}" class="btn btn-danger" role="button"
+                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
     <div class="container" role="main">
         <table class="table table-striped">
             <thead>
@@ -34,8 +59,11 @@
                     </td>
                     <td>
                         <a href="/view_booking/?id={{ booking.id }}" class="btn btn-default btn-xs" role="button">Details</a>
-                        <a href="./?cancel={{ booking.id }}" class="btn btn-danger btn-xs" role="button"
-                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>Cancel</a>
+                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                                data-target="#cancelModel{{ booking.id }}"
+                                {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>
+                            Cancel
+                        </button>
                     </td>
                 </tr>
             {% endfor %}

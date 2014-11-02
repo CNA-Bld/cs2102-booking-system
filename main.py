@@ -89,6 +89,13 @@ class ManageHandler(webapp2.RequestHandler):
         if user is None:
             self.redirect('/login/')
         elif login.user_session_check(user, key):
+            if self.request.get('cancel'):
+                booking = models.Book.get_by_book_id(int(self.request.get('cancel')))
+                if booking.user_id.get().user_id != user:
+                    self.response.set_status(403, "Unauthorized!")
+                    return
+                else:
+                    booking.cancel()
             bookings = models.Book.find_user_booking(models.User.get_user_by_id(user))
             bookings_dict_list = [
                 {'facility': booking.facility_id.get().to_string(), 'date': booking.date.strftime("%d-%m-%Y"),
