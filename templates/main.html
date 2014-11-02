@@ -2,108 +2,167 @@
 
 {% block main_body %}
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#selectdate input').datepicker({
-                format: "dd-mm-yyyy",
-                todayHighlight: true
-            });
-            $('.selectpicker').selectpicker();
-        });
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $('#selectdate input').datepicker({
+        format: "dd-mm-yyyy",
+        todayHighlight: true,
+        autoclose: true
+    });
+    $('.selectpicker').selectpicker();
+});
+</script>
+
+<style type="text/css">
+.headcol {
+    position: absolute;
+
+    width: 5em;
+    left: 0;
+    top: auto;
+    border-right: 0px none black;
+    border-top-width: 3px; /*only relevant for first row*/
+    margin-top: -3px; /*compensate for top border*/
+}
+
+</style>
+
+<script type="text/javascript">
+
+
+
+
+
+
+google.setOnLoadCallback(drawChart);
+function drawChart(){
+    var data = google.visualization.arrayToDataTable([
+        [ 'Magnolia Room',  'http://www.google.com',   new Date(0,0,0,0,0,0),  new Date(0,0,0,1,0,0) ],
+        [ 'Magnolia Room',  'http://www.google.com',    new Date(0,0,0,12,0,0),  new Date(0,0,0,14,0,0) ],
+        [ 'Magnolia Room',  'http://www.google.com',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0)],
+        [ 'Magnolia Room',  'http://www.google.com', new Date(0,0,0,16,30,0), new Date(0,0,0,19,0,0) ],
+        [ 'Gladiolus Room', '',   new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
+        [ 'Gladiolus Room', '',       new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ],
+        [ 'Gladiolus Room', '',        new Date(0,0,0,16,30,0), new Date(0,0,0,18,0,0) ],
+        [ 'Petunia Room',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
+        [ 'Petunia Room',   '',             new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0)],
+        [ 'Petunia Room',   '',          new Date(0,0,0,16,30,0), new Date(0,0,0,18,30,0)]
+        ]);
+
+    var view = new google.visualization.DataView(data);
+        view.setColumns([0, 2, 3]);
+
+
+    var options = {
+      timeline: {showBarLabels: false},
+      'tooltip' : {
+          trigger: 'none'
+      }
+      ,
+      timeline: { singleColor: '#a2ded0' },
+
+
+  };
+
+
+
+  var chart = new google.visualization.Timeline( 
+      document.getElementById('timeline'));
+  chart.draw(view, options);
+
+  var selectHandler = function(e) {
+   window.location = data.getValue(chart.getSelection()[0].bb, 1 );
+}
+
+        // Add our selection handler.
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+
+
+    }
+
+
+
     </script>
-
-    <style type="text/css">
-        .headcol {
-            position: absolute;
-
-            width: 5em;
-            left: 0;
-            top: auto;
-            border-right: 0px none black;
-            border-top-width: 3px; /*only relevant for first row*/
-            margin-top: -3px; /*compensate for top border*/
-        }
-
-    </style>
 
 
     <div class="container" role="main">
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Search</h3>
-        </div>
-        <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Search</h3>
+            </div>
+            <div class="panel-body">
 
-            <form name="filter" action="" method="get" class="form-horizontal" role="form">
-                <div class="form-group" id="selectdate">
-                    <label for="iddate" class="col-sm-2 control-label">Date</label>
+                <form name="filter" action="" method="get" class="form-horizontal" role="form">
+                    <div class="form-group" id="selectdate">
+                        <label for="iddate" class="col-sm-2 control-label">Date</label>
 
-                    <div class="col-sm-10">
-                        <input id="iddate" type="text" name="date" class="form-control" required="true"
-                               autocomplete="false" value="{{ selected_date }}">
+                        <div class="col-sm-10">
+                            <input id="iddate" type="text" name="date" class="form-control" required="true"
+                            autocomplete="false" value="{{ selected_date }}">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="idlocation" class="col-sm-2 control-label">Location</label>
+                    <div class="form-group">
+                        <label for="idlocation" class="col-sm-2 control-label">Location</label>
 
-                    <div class="col-sm-10">
-                        <select id="idlocation" name="location" class="selectpicker form-control">
-                            {% for location in location_list %}
+                        <div class="col-sm-10">
+                            <select id="idlocation" name="location" class="selectpicker form-control">
+                                {% for location in location_list %}
                                 <option value="{{ location }}"
-                                        {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
-                            {% endfor %}
-                        </select>
+                                {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
 
 
-                <div class="form-group">
-                    <label for="idtype" class="col-sm-2 control-label">Type</label>
+                    <div class="form-group">
+                        <label for="idtype" class="col-sm-2 control-label">Type</label>
 
-                    <div class="col-sm-10">
-                        <select id="idtype" name="type" class="selectpicker form-control">
-                            <option value="">Any</option>
-                            {% for type in type_list %}
+                        <div class="col-sm-10">
+                            <select id="idtype" name="type" class="selectpicker form-control">
+                                <option value="">Any</option>
+                                {% for type in type_list %}
                                 <option value="{{ type }}"
-                                        {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
-                            {% endfor %}
-                        </select>
+                                {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                </div>
 
 
-                <div class="form-group">
-                    <label for="idcapacity" class="col-sm-2 control-label">Capacity</label>
+                    <div class="form-group">
+                        <label for="idcapacity" class="col-sm-2 control-label">Capacity</label>
 
-                    <div class="col-sm-10">
-                        <input id="idcapacity" name="capacity" class="form-control"
-                               autocomplete="false" {% if selected_capacity > 0 %}
-                               value="{{ selected_capacity }}" {% endif %}>
+                        <div class="col-sm-10">
+                            <input id="idcapacity" name="capacity" class="form-control"
+                            autocomplete="false" {% if selected_capacity > 0 %}
+                            value="{{ selected_capacity }}" {% endif %}>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="reset" class="btn btn-default">Clear</button>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="reset" class="btn btn-default">Clear</button>
+                        </div>
                     </div>
-                </div>
 
-            </form>
+                </form>
 
+            </div>
         </div>
-    </div>
 
-    {% if is_querying %}
+        {% if is_querying %}
 
         <nav>
             <ul class="pager">
                 <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
                 <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
                 <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
-                <li class="disabled"><a href="#">Today</a></li>
+                <li class="disabled"><a href="#">{{ selected_date }}</a></li>
                 <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
                 <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
                 <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
@@ -113,193 +172,196 @@
 
 
         {% if facility_list %}
-            <div style="overflow-x:scroll;overflow-y:visible;">
-                <table class="table">
-                    <thead>
+        <div style="overflow-x:scroll;overflow-y:visible;">
+            <table class="table">
+                <thead>
                     <tr>
-                        <th width="135px" bgcolor="#ecf0f1" style="postion: absolute;">
-                            Room
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
-                            0
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
+                        <th width="200px" bgcolor="#ecf0f1" style="postion: absolute;">
+                         <font color="#2C3E50" size="2px" > Room\Time </font>
+                     </th>
+                     <th width="2px" bgcolor="#ecf0f1" >
+                        <font  color="#2C3E50" size="1px">0</font>
+                    </th>
+                    <th width="2px" bgcolor="#ecf0f1" >
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
-                            1
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+                    </th>
+                    <th width="2px" bgcolor="#ecf0f1" >
+                       <font color="#2C3E50" size="1px">1</font>
+                   </th>
+                   <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            2
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+                   </th>
+                   <th width="2px" bgcolor="#ecf0f1">
+                    <font color="#2C3E50" size="1px">2</font>
+                </th>
+                <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            3
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+                </th>
+                <th width="2px" bgcolor="#ecf0f1">
+                   <font color="#2C3E50" size="1px">3</font>
+               </th>
+               <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            4
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+               </th>
+               <th width="2px" bgcolor="#ecf0f1">
+                   <font color="#2C3E50" size="1px">4</font>
+               </th>
+               <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            5
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+               </th>
+               <th width="2px" bgcolor="#ecf0f1">
+                <font color="#2C3E50" size="1px">5</font>
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            6
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
+                <font color="#2C3E50" size="1px">6</font>
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            7
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
+                <font color="#2C3E50" size="1px">7</font>
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            8
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+            </th>
+            <th width="2px" bgcolor="#ecf0f1">
+               <font color="#2C3E50" size="1px">8</font>
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            9
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
+               <font color="#2C3E50" size="1px">9</font>
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            10
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
+               <font color="#2C3E50" size="1px">10</font>
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            11
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
+               <font color="#2C3E50" size="1px">11</font>
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            12
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
+               <font color="#2C3E50" size="1px">12</font>
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            13
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+           </th>
+           <th width="2px" bgcolor="#ecf0f1">
+            <font color="#2C3E50" size="1px">13</font>
+        </th>
+        <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            14
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+        </th>
+        <th width="2px" bgcolor="#ecf0f1">
+           <font color="#2C3E50" size="1px">14</font>
+       </th>
+       <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            15
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+       </th>
+       <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">15</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            16
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">16</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            17
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">17</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            18
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">18</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            19
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">19</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            20
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">20</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            21
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">21</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            22
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">22</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
-                            23
-                        </th>
-                        <th width="2px" bgcolor="#ecf0f1">
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
+        <font color="#2C3E50" size="1px">23</font>
+    </th>
+    <th width="2px" bgcolor="#ecf0f1">
 
-                        </th>
-
-
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for facility in facility_list %}
-                        <tr>
-                            <td bgcolor="#2C3E50" width="135px" style="position: relative;">
-                                <font color="#ffffff" size="1px">  {{ facility.location }} {{ facility.room_number }}
-                                    <br>
-                                    {{ facility.type }} w/ {{ facility.capacity }} pax </font>
-                            </td>
+    </th>
 
 
-                            {% for x in facility.availability %}
-                                {% if x %}
-                                    <td bgcolor="#D24D57" style="position: relative;">
-                                        1
-                                    </td>
-                                {% else %}
-                                    <td bgcolor="#DADFE1" style="position: relative;">
-                                        0
-                                    </td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
+</tr>
+</thead>
+<tbody>
+    {% for facility in facility_list %}
+    <tr>
+        <td bgcolor="#2C3E50" width="200px" style="position: relative;">
+            <font color="#ffffff" size="1px">  {{ facility.location }} {{ facility.room_number }}
+                <br>
+                {{ facility.type }} w/ {{ facility.capacity }} pax </font>
+            </td>
 
-                    </tbody>
-                </table>
-                {% else %}
 
-            </div>
-            <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
-        {% endif %}
-    {% endif %}
-    </div>
+            {% for x in facility.availability %}
+            {% if x %}
+            <td bgcolor="#a2ded0" style="position: relative;">
+
+            </td>
+            {% else %}
+            <td bgcolor="#f2f1ef" style="position: relative;">
+
+            </td>
+            {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% else %}
+
+</div>
+<div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
+{% endif %}
+{% endif %}
+</div>
+
+
+<div id="timeline" ></div>
 
 {% endblock %}
