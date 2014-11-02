@@ -81,6 +81,10 @@
 
     <div class="container" role="main">
 
+        {% if is_querying and not facility_list %}
+            <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
+        {% endif %}
+
         <div class="panel panel-default">
             {% if facility_list %}
                 <div class="panel-heading panel-collapsed">
@@ -168,8 +172,6 @@
             </nav>
             {% if facility_list %}
                 <div id="timeline"></div>
-            {% else %}
-                <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
             {% endif %}
         {% endif %}
     </div>
