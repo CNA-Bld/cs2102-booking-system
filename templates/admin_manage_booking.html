@@ -1,0 +1,47 @@
+{% extends "admin_main.html" %}
+
+{% block admin_body %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Facility</th>
+            <th>Date</th>
+            <th>Placed Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for booking in booking_list %}
+            <tr>
+                <td>{{ booking.booking_user.name }}</td>
+                <td>{{ booking.facility }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.place_time }}</td>
+                <td>
+                    {% if booking.is_processed %}
+                        {% if booking.is_approved %}
+                            <span class="label label-success">Approved</span>
+                        {% else %}
+                            <span class="label label-danger">Declined</span>
+                        {% endif %}
+                    {% else %}
+                        {% if booking.is_cancelled %}
+                            <span class="label label-default">Cancelled</span>
+                        {% else %}
+                            <span class="label label-primary">Processing</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/view_booking/?id={{ booking.id }}" class="btn btn-default btn-xs"
+                       role="button">Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

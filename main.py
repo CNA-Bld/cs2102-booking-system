@@ -158,6 +158,9 @@ class AdminHandler(webapp2.RequestHandler):
             models.Book.get_by_book_id(int(self.request.get('id'))).decline()
             self.redirect('./?do=manage_booking')
             return
+        elif self.request.get('do') == 'manage_booking':
+            template_values['booking_list'] = [book.to_dict() for book in models.Book.query().order(-models.Book.place_time).fetch()]
+            path = os.path.join(os.path.dirname(__file__), 'templates/admin_manage_booking.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'templates/admin_main.html')
         self.response.out.write(template.render(path, template_values))
