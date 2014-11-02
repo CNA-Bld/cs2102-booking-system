@@ -57,8 +57,8 @@ class BookTime():
                 end = i / 2
         return {'start': start, 'end': end}
 
-    def to_tuple_list(self):
-        tuple_list = []
+    def to_dict_list(self):
+        dict_list = {}
         if self.data[0]:
             curr_start = 0
         for i in range(1, 48):
@@ -66,10 +66,10 @@ class BookTime():
                 curr_start = i
             if not self.data[i] and self.data[i-1]:
                 curr_end = i
-                tuple_list.append((curr_start, curr_end))
+                dict_list["start=%d&end=%d" % (curr_start, curr_end)] = utils.timeslot_tuple_to_js((curr_start, curr_end))
         if self.data[47]:
-            tuple_list.append((curr_start, 48))
-        return tuple_list
+            dict_list["start=%d&end=%d" % (curr_start, 48)] = utils.timeslot_tuple_to_js((curr_start, 48))
+        return dict_list
 
 
 class User(ndb.Model):
