@@ -3,84 +3,81 @@
 {% block main_body %}
 
 
-<script type="text/javascript">
-$(document).ready(function () {
-    $('#selectdate input').datepicker({
-        format: "dd-mm-yyyy",
-        todayHighlight: true,
-        autoclose: true
-    });
-    $('.selectpicker').selectpicker();
-});
-</script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#selectdate input').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true,
+                autoclose: true
+            });
+            $('.selectpicker').selectpicker();
+        });
+    </script>
 
-<style type="text/css">
-.headcol {
-    position: absolute;
+    <style type="text/css">
+        .headcol {
+            position: absolute;
 
-    width: 5em;
-    left: 0;
-    top: auto;
-    border-right: 0px none black;
-    border-top-width: 3px; /*only relevant for first row*/
-    margin-top: -3px; /*compensate for top border*/
-}
+            width: 5em;
+            left: 0;
+            top: auto;
+            border-right: 0px none black;
+            border-top-width: 3px; /*only relevant for first row*/
+            margin-top: -3px; /*compensate for top border*/
+        }
 
-</style>
+    </style>
 
-<script type="text/javascript">
-
-
+    <script type="text/javascript">
 
 
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+            var container = document.getElementById('timeline');
+
+            var chart = new google.visualization.Timeline(container);
+
+            var dataTable = new google.visualization.DataTable();
+
+            dataTable.addColumn({ type: 'string', id: 'Facility' });
+            dataTable.addColumn({ type: 'string', id: 'URL' });
+            dataTable.addColumn({ type: 'string', id: 'Description' });
+            dataTable.addColumn({ type: 'date', id: 'Start' });
+            dataTable.addColumn({ type: 'date', id: 'End' });
+
+            dataTable.addRows([
+                {% for facility in facility_list %}
+                    {% for timeslot in facility.availability %}
+                        [ '{{ facility.type }} {{ facility.room_number }}', '/add_booking/?id={{ facility.id }}&date={{ selected_date }}', '\
+                                {% if facility.is_auto_approval %}\
+                                    [Auto Approval]\
+                                {% else %}\
+                                    [Manual Approval]\
+                                {% endif %}\
+                        Capacity: {{ facility.capacity }}' , {{ timeslot }}],
+                    {% endfor %}
+                {% endfor %}
+            ]);
+
+            var view = new google.visualization.DataView(dataTable);
+            view.setColumns([0, 2, 3, 4]);
+
+            var options = {
+                timeline: {showBarLabels: false, singleColor: '#a2ded0'},
+            };
+
+            chart.draw(view, options);
+
+            var selectHandler = function (e) {
+                window.location = dataTable.getValue(chart.getSelection()[0].bb, 1);
+            }
+
+            // Add our selection handler.
+            google.visualization.events.addListener(chart, 'select', selectHandler);
 
 
-google.setOnLoadCallback(drawChart);
-function drawChart(){
-    var data = google.visualization.arrayToDataTable([
-        [ 'Magnolia Room',  'http://www.google.com',   new Date(0,0,0,0,0,0),  new Date(0,0,0,1,0,0) ],
-        [ 'Magnolia Room',  'http://www.google.com',    new Date(0,0,0,12,0,0),  new Date(0,0,0,14,0,0) ],
-        [ 'Magnolia Room',  'http://www.google.com',    new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0)],
-        [ 'Magnolia Room',  'http://www.google.com', new Date(0,0,0,16,30,0), new Date(0,0,0,19,0,0) ],
-        [ 'Gladiolus Room', '',   new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
-        [ 'Gladiolus Room', '',       new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ],
-        [ 'Gladiolus Room', '',        new Date(0,0,0,16,30,0), new Date(0,0,0,18,0,0) ],
-        [ 'Petunia Room',   '',       new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
-        [ 'Petunia Room',   '',             new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0)],
-        [ 'Petunia Room',   '',          new Date(0,0,0,16,30,0), new Date(0,0,0,18,30,0)]
-        ]);
-
-    var view = new google.visualization.DataView(data);
-        view.setColumns([0, 2, 3]);
-
-
-    var options = {
-      timeline: {showBarLabels: false},
-      'tooltip' : {
-          trigger: 'none'
-      }
-      ,
-      timeline: { singleColor: '#a2ded0' },
-
-
-  };
-
-
-
-  var chart = new google.visualization.Timeline( 
-      document.getElementById('timeline'));
-  chart.draw(view, options);
-
-  var selectHandler = function(e) {
-   window.location = data.getValue(chart.getSelection()[0].bb, 1 );
-}
-
-        // Add our selection handler.
-        google.visualization.events.addListener(chart, 'select', selectHandler);
-
-
-    }
-
+        }
 
 
     </script>
@@ -100,7 +97,7 @@ function drawChart(){
 
                         <div class="col-sm-10">
                             <input id="iddate" type="text" name="date" class="form-control" required="true"
-                            autocomplete="false" value="{{ selected_date }}">
+                                   autocomplete="false" value="{{ selected_date }}">
                         </div>
                     </div>
 
@@ -110,8 +107,8 @@ function drawChart(){
                         <div class="col-sm-10">
                             <select id="idlocation" name="location" class="selectpicker form-control">
                                 {% for location in location_list %}
-                                <option value="{{ location }}"
-                                {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+                                    <option value="{{ location }}"
+                                            {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -125,8 +122,8 @@ function drawChart(){
                             <select id="idtype" name="type" class="selectpicker form-control">
                                 <option value="">Any</option>
                                 {% for type in type_list %}
-                                <option value="{{ type }}"
-                                {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
+                                    <option value="{{ type }}"
+                                            {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -138,8 +135,8 @@ function drawChart(){
 
                         <div class="col-sm-10">
                             <input id="idcapacity" name="capacity" class="form-control"
-                            autocomplete="false" {% if selected_capacity > 0 %}
-                            value="{{ selected_capacity }}" {% endif %}>
+                                   autocomplete="false" {% if selected_capacity > 0 %}
+                                   value="{{ selected_capacity }}" {% endif %}>
                         </div>
                     </div>
 
@@ -156,212 +153,23 @@ function drawChart(){
         </div>
 
         {% if is_querying %}
-
-        <nav>
-            <ul class="pager">
-                <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
-                <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
-                <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
-                <li class="disabled"><a href="#">{{ selected_date }}</a></li>
-                <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
-                <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
-                <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
-            </ul>
-        </nav>
-
-
-
-        {% if facility_list %}
-        <div style="overflow-x:scroll;overflow-y:visible;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th width="200px" bgcolor="#ecf0f1" style="postion: absolute;">
-                         <font color="#2C3E50" size="2px" > Room\Time </font>
-                     </th>
-                     <th width="2px" bgcolor="#ecf0f1" >
-                        <font  color="#2C3E50" size="1px">0</font>
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1" >
-
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1" >
-                       <font color="#2C3E50" size="1px">1</font>
-                   </th>
-                   <th width="2px" bgcolor="#ecf0f1">
-
-                   </th>
-                   <th width="2px" bgcolor="#ecf0f1">
-                    <font color="#2C3E50" size="1px">2</font>
-                </th>
-                <th width="2px" bgcolor="#ecf0f1">
-
-                </th>
-                <th width="2px" bgcolor="#ecf0f1">
-                   <font color="#2C3E50" size="1px">3</font>
-               </th>
-               <th width="2px" bgcolor="#ecf0f1">
-
-               </th>
-               <th width="2px" bgcolor="#ecf0f1">
-                   <font color="#2C3E50" size="1px">4</font>
-               </th>
-               <th width="2px" bgcolor="#ecf0f1">
-
-               </th>
-               <th width="2px" bgcolor="#ecf0f1">
-                <font color="#2C3E50" size="1px">5</font>
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-                <font color="#2C3E50" size="1px">6</font>
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-                <font color="#2C3E50" size="1px">7</font>
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-
-            </th>
-            <th width="2px" bgcolor="#ecf0f1">
-               <font color="#2C3E50" size="1px">8</font>
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-               <font color="#2C3E50" size="1px">9</font>
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-               <font color="#2C3E50" size="1px">10</font>
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-               <font color="#2C3E50" size="1px">11</font>
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-               <font color="#2C3E50" size="1px">12</font>
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-
-           </th>
-           <th width="2px" bgcolor="#ecf0f1">
-            <font color="#2C3E50" size="1px">13</font>
-        </th>
-        <th width="2px" bgcolor="#ecf0f1">
-
-        </th>
-        <th width="2px" bgcolor="#ecf0f1">
-           <font color="#2C3E50" size="1px">14</font>
-       </th>
-       <th width="2px" bgcolor="#ecf0f1">
-
-       </th>
-       <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">15</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">16</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">17</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">18</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">19</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">20</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">21</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">22</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-        <font color="#2C3E50" size="1px">23</font>
-    </th>
-    <th width="2px" bgcolor="#ecf0f1">
-
-    </th>
-
-
-</tr>
-</thead>
-<tbody>
-    {% for facility in facility_list %}
-    <tr>
-        <td bgcolor="#2C3E50" width="200px" style="position: relative;">
-            <font color="#ffffff" size="1px">  {{ facility.location }} {{ facility.room_number }}
-                <br>
-                {{ facility.type }} w/ {{ facility.capacity }} pax </font>
-            </td>
-
-
-            {% for x in facility.availability %}
-            {% if x %}
-            <td bgcolor="#a2ded0" style="position: relative;">
-
-            </td>
+            {% if facility_list %}
+                <nav>
+                    <ul class="pager">
+                        <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
+                        <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
+                        <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
+                        <li class="disabled"><a href="#">{{ selected_date }}</a></li>
+                        <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
+                        <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
+                        <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
+                    </ul>
+                </nav>
+                <div id="timeline"></div>
             {% else %}
-            <td bgcolor="#f2f1ef" style="position: relative;">
-
-            </td>
+                <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
             {% endif %}
-            {% endfor %}
-        </tr>
-        {% endfor %}
-
-    </tbody>
-</table>
-{% else %}
-
-</div>
-<div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
-{% endif %}
-{% endif %}
-</div>
-
-
-<div id="timeline" ></div>
+        {% endif %}
+    </div>
 
 {% endblock %}

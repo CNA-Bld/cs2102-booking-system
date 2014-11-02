@@ -60,10 +60,10 @@ class MainHandler(webapp2.RequestHandler):
                 is_querying = True
                 facilities = models.Facility.apply_filter(location, facility_type, capacity, date)
                 facilities_dict_list = [
-                    {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
-                     'price': facility.price_per_hr, 'comment': facility.comment,
-                     'room_number': facility.room_number, 'id': facility.key.id(),
-                     'availability': facility.check_availability(date).inverted().data.values()} for facility in facilities]
+                    dict(facility.to_dict(), **{'availability': [utils.timeslot_tuple_to_js(t) for t in
+                                                                 facility.check_availability(
+                                                                     date).inverted().to_tuple_list()]})
+                    for facility in facilities]
                 facilities_dict_list.sort(key=lambda x: x['location'] + x['type'] + x['room_number'])
             else:
                 is_querying = False
