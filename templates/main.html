@@ -2,6 +2,22 @@
 
 {% block main_body %}
 
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('.panel-heading').on("click", function (e) {
+                if ($(this).hasClass('panel-collapsed')) {
+                    $(this).parents('.panel').find('.panel-body').slideDown();
+                    $(this).removeClass('panel-collapsed');
+                    $(this).find('span').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                }
+                else {
+                    $(this).parents('.panel').find('.panel-body').slideUp();
+                    $(this).addClass('panel-collapsed');
+                    $(this).find('span').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                }
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -13,20 +29,6 @@
             $('.selectpicker').selectpicker();
         });
     </script>
-
-    <style type="text/css">
-        .headcol {
-            position: absolute;
-
-            width: 5em;
-            left: 0;
-            top: auto;
-            border-right: 0px none black;
-            border-top-width: 3px; /*only relevant for first row*/
-            margin-top: -3px; /*compensate for top border*/
-        }
-
-    </style>
 
     <script type="text/javascript">
 
@@ -71,12 +73,9 @@
 
             var selectHandler = function (e) {
                 window.location = dataTable.getValue(chart.getSelection()[0].bb, 1);
-            }
+            };
 
-            // Add our selection handler.
             google.visualization.events.addListener(chart, 'select', selectHandler);
-
-
         }
 
 
@@ -86,10 +85,16 @@
     <div class="container" role="main">
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Search</h3>
-            </div>
-            <div class="panel-body">
+            {% if facility_list %}
+                <div class="panel-heading panel-collapsed">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-chevron-down"></span> Search Criteria</h3>
+                </div>
+            {% else %}
+                <div class="panel-heading">
+                    <h3 class="panel-title"><span class="glyphicon glyphicon-chevron-up"></span> Search Criteria</h3>
+                </div>
+            {% endif %}
+            <div class="panel-body"{% if facility_list %} style="display: none" {% endif %}>
 
                 <form name="filter" action="" method="get" class="form-horizontal" role="form">
                     <div class="form-group" id="selectdate">
