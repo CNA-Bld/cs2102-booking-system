@@ -92,6 +92,10 @@ class User(ndb.Model):
         else:
             return cls.create_new_user(user_id, name, faculty, year, email)
 
+    def to_dict(self):
+        return {'user_id': self.user_id, 'name': self.name, 'email': self.email, 'faculty': self.faculty,
+                'year': self.year}
+
 
 class Facility(ndb.Model):
     location = ndb.StringProperty()
@@ -199,6 +203,7 @@ class Book(ndb.Model):
     is_processed = ndb.BooleanProperty()
     facility_id = ndb.KeyProperty()
     user_id = ndb.KeyProperty()
+    place_time = ndb.DateTimeProperty()
 
     @classmethod
     def init(cls):
@@ -209,7 +214,7 @@ class Book(ndb.Model):
         b.time = repr(tmp)
         b.purpose = 'purpose'
         b.comment = 'comment'
-        b.facility_id = Facility.query().get().key
+        b.facility_id = (Facility.query().fetch())[1].key
         b.user_id = User.query().get().key
         b.place()
 
@@ -220,7 +225,7 @@ class Book(ndb.Model):
 
     @classmethod
     def find_user_booking(cls, user):
-        query = cls.query(cls.user_id == user.key)
+        query = cls.query(cls.user_id == user.key).order(-cls.place_time)
         return query.fetch()
 
     @classmethod
@@ -238,6 +243,7 @@ class Book(ndb.Model):
         if not self.check():
             return False
         else:
+            self.place_time = utils.get_time_plus_8()
             if self.facility_id.get().is_auto_approval:
                 self.is_approved = True
                 self.is_processed = True
@@ -265,3 +271,13 @@ class Book(ndb.Model):
         self.is_processed = False
         self.is_approved = False
         self.put()
+
+    def to_dict(self):
+        return {'facility': self.facility_id.get().to_string(),
+                'date': self.date.strftime("%d-%m-%Y"),
+                'is_approved': self.is_approved, 'is_processed': self.is_processed,
+                'is_cancelled': self.is_cancelled,
+                'is_declined': self.is_processed and not self.is_approved,
+                'id': self.key.id(), 'comment': self.comment, 'purpose': self.purpose,
+                'booking_user': self.user_id.get().to_dict(),
+                'place_time': self.place_time.strftime("%d-%m-%Y %H:%M:%S")}

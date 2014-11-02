@@ -97,11 +97,7 @@ class ManageHandler(webapp2.RequestHandler):
                 else:
                     booking.cancel()
             bookings = models.Book.find_user_booking(models.User.get_user_by_id(user))
-            bookings_dict_list = [
-                {'facility': booking.facility_id.get().to_string(), 'date': booking.date.strftime("%d-%m-%Y"),
-                 'is_approved': booking.is_approved, 'is_processed': booking.is_processed,
-                 'is_cancelled': booking.is_cancelled, 'is_declined': booking.is_processed and not booking.is_approved,
-                 'id': booking.key.id()} for booking in bookings]
+            bookings_dict_list = [booking.to_dict() for booking in bookings]
 
             native_values = {'booking_list': bookings_dict_list, 'user': user}
             template_values = dict(base_template_values, **native_values)
@@ -133,14 +129,7 @@ class ViewBookingHandler(webapp2.RequestHandler):
             booking = models.Book.get_by_book_id(int(self.request.get('id')))
             user = "Dummy Admin System"
         booking_user = booking.user_id.get()
-        native_values = {'user': user, 'facility': booking.facility_id.get().to_string(),
-                         'date': booking.date.strftime("%d-%m-%Y"),
-                         'is_approved': booking.is_approved, 'is_processed': booking.is_processed,
-                         'is_cancelled': booking.is_cancelled,
-                         'is_declined': booking.is_processed and not booking.is_approved,
-                         'id': booking.key.id(), 'comment': booking.comment, 'purpose': booking.purpose,
-                         'user_id': booking_user.user_id, 'user_name': booking_user.name,
-                         'user_faculty': booking_user.faculty, 'user_email': booking_user.email,
+        native_values = {'user': user, 'booking': booking.to_dict(),
                          'is_admin': users.is_current_user_admin()}
 
         template_values = dict(base_template_values, **native_values)

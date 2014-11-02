@@ -16,6 +16,17 @@ indexes:
   - name: facility_id
   - name: is_cancelled
 
+- kind: Book
+  properties:
+  - name: user_id
+  - name: place_time
+
+- kind: Book
+  properties:
+  - name: user_id
+  - name: place_time
+    direction: desc
+
 - kind: Facility
   properties:
   - name: location

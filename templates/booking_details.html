@@ -1,0 +1,63 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>Booking No.</th>
+        <th>{{ booking.id }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Facility</td>
+        <td>{{ booking.facility }}</td>
+    </tr>
+    <tr>
+        <td>Date</td>
+        <td>{{ booking.date }}</td>
+    </tr>
+    <tr>
+        <td>User</td>
+        <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}] ({{ booking.booking_user.faculty }})</td>
+    </tr>
+    <tr>
+        <td>Placed Time</td>
+        <td>{{ booking.place_time }}</td>
+    </tr>
+    <tr>
+        <td>Purpose</td>
+        <td>{{ booking.purpose }}</td>
+    </tr>
+    <tr>
+        <td>Comment</td>
+        <td>{{ booking.comment }}</td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>
+            {% if booking.is_processed %}
+                {% if booking.is_approved %}
+                    <span class="label label-success">Approved</span>
+                {% else %}
+                    <span class="label label-danger">Declined</span>
+                {% endif %}
+            {% else %}
+                {% if booking.is_cancelled %}
+                    <span class="label label-default">Cancelled</span>
+                {% else %}
+                    <span class="label label-primary">Processing</span>
+                {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    {% if is_admin %}
+        <tr>
+            <td>Action</td>
+            <td>
+                <a href="/admin/?do=approve_booking&id={{ booking.id }}" class="btn btn-success btn-xs"
+                   role="button" {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Approve</a>
+                <a href="/admin/?do=decline_booking&id={{ booking.id }}" class="btn btn-danger btn-xs"
+                   role="button" {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Decline</a>
+            </td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
