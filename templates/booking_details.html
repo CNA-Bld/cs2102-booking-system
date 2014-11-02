@@ -14,10 +14,14 @@
         <td>Date</td>
         <td>{{ booking.date }}</td>
     </tr>
-    <tr>
-        <td>User</td>
-        <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}] ({{ booking.booking_user.faculty }})</td>
-    </tr>
+    {% if is_admin %}
+        <tr>
+            <td>User</td>
+            <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}]
+                ({{ booking.booking_user.faculty }})
+            </td>
+        </tr>
+    {% endif %}
     <tr>
         <td>Placed Time</td>
         <td>{{ booking.place_time }}</td>
@@ -53,9 +57,11 @@
             <td>Action</td>
             <td>
                 <a href="/admin/?do=approve_booking&id={{ booking.id }}" class="btn btn-success btn-xs"
-                   role="button" {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Approve</a>
+                   role="button"
+                   {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Approve</a>
                 <a href="/admin/?do=decline_booking&id={{ booking.id }}" class="btn btn-danger btn-xs"
-                   role="button" {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Decline</a>
+                   role="button"
+                   {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Decline</a>
             </td>
         </tr>
     {% endif %}

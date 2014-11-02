@@ -140,6 +140,7 @@ class AdminHandler(webapp2.RequestHandler):
     def get(self):
         template_values = {'user': 'Dummy Admin System'}
         if self.request.get('do') == 'create_facility':
+            template_values['facility'] = models.Facility()
             template = JINJA_ENVIRONMENT.get_template('admin_create_facility.html')
         elif self.request.get('do') == 'manage_facility':
             template_values['facility_list'] = [facility.to_dict() for facility in models.Facility.query().fetch()]
