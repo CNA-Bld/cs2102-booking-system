@@ -63,7 +63,7 @@ class MainHandler(webapp2.RequestHandler):
                     {'location': facility.location, 'type': facility.type, 'capacity': facility.capacity,
                      'price': facility.price_per_hr, 'comment': facility.comment,
                      'room_number': facility.room_number, 'id': facility.key.id(),
-                     'availability': facility.check_availability(date).inverted().data} for facility in facilities]
+                     'availability': facility.check_availability(date).inverted().data.values()} for facility in facilities]
                 facilities_dict_list.sort(key=lambda x: x['location'] + x['type'] + x['room_number'])
             else:
                 is_querying = False

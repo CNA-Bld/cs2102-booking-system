@@ -2,33 +2,32 @@
 
 {% block main_body %}
 
-<script type="text/javascript">
-$(document).ready(function () {
-    $('#selectdate input').datepicker({
-        format: "dd-mm-yyyy",
-        todayHighlight: true
-    });
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#selectdate input').datepicker({
+                format: "dd-mm-yyyy",
+                todayHighlight: true
+            });
+            $('.selectpicker').selectpicker();
+        });
+    </script>
 
-    $('.selectpicker').selectpicker();
-});
-</script>
+    <style type="text/css">
+        .headcol {
+            position: absolute;
 
-<style type="text/css">
-  .headcol {
-            position:absolute; 
-    
-            width:5em; 
-            left:0;
-            top:auto;
-            border-right: 0px none black; 
-            border-top-width:3px; /*only relevant for first row*/
-            margin-top:-3px; /*compensate for top border*/
+            width: 5em;
+            left: 0;
+            top: auto;
+            border-right: 0px none black;
+            border-top-width: 3px; /*only relevant for first row*/
+            margin-top: -3px; /*compensate for top border*/
         }
 
-</style>
+    </style>
 
 
-<div class="container" role="main">
+    <div class="container" role="main">
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -42,7 +41,7 @@ $(document).ready(function () {
 
                     <div class="col-sm-10">
                         <input id="iddate" type="text" name="date" class="form-control" required="true"
-                        autocomplete="false" value="{{ selected_date }}">
+                               autocomplete="false" value="{{ selected_date }}">
                     </div>
                 </div>
 
@@ -52,8 +51,8 @@ $(document).ready(function () {
                     <div class="col-sm-10">
                         <select id="idlocation" name="location" class="selectpicker form-control">
                             {% for location in location_list %}
-                            <option value="{{ location }}"
-                            {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
+                                <option value="{{ location }}"
+                                        {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -67,8 +66,8 @@ $(document).ready(function () {
                         <select id="idtype" name="type" class="selectpicker form-control">
                             <option value="">Any</option>
                             {% for type in type_list %}
-                            <option value="{{ type }}"
-                            {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
+                                <option value="{{ type }}"
+                                        {% if type == selected_type %}selected{% endif %}>{{ type }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -80,8 +79,8 @@ $(document).ready(function () {
 
                     <div class="col-sm-10">
                         <input id="idcapacity" name="capacity" class="form-control"
-                        autocomplete="false" {% if selected_capacity > 0 %}
-                        value="{{ selected_capacity }}" {% endif %}>
+                               autocomplete="false" {% if selected_capacity > 0 %}
+                               value="{{ selected_capacity }}" {% endif %}>
                     </div>
                 </div>
 
@@ -94,209 +93,213 @@ $(document).ready(function () {
 
             </form>
 
-
         </div>
     </div>
 
     {% if is_querying %}
 
-    <nav>
-        <ul class="pager">
-            <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
-            <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
-            <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
-            <li class="disabled"><a href="#">Today</a></li>
-            <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
-            <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
-            <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
-        </ul>
-    </nav>
+        <nav>
+            <ul class="pager">
+                <li><a href="./?{{ query_string }}&offset=-3">&larr; 3</a></li>
+                <li><a href="./?{{ query_string }}&offset=-2">&larr; 2</a></li>
+                <li><a href="./?{{ query_string }}&offset=-1">&larr; 1</a></li>
+                <li class="disabled"><a href="#">Today</a></li>
+                <li><a href="./?{{ query_string }}&offset=1">1 &rarr;</a></li>
+                <li><a href="./?{{ query_string }}&offset=2">2 &rarr;</a></li>
+                <li><a href="./?{{ query_string }}&offset=3">3 &rarr;</a></li>
+            </ul>
+        </nav>
 
 
 
-    {% if facility_list %}
-    <div style = "overflow-x:scroll;overflow-y:visible;">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th width="135px" bgcolor="#ecf0f1" style = "postion: absolute;">
-                        Room
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1" style = "position: relative;">
-                        0
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1" style = "position: relative;">
+        {% if facility_list %}
+            <div style="overflow-x:scroll;overflow-y:visible;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th width="135px" bgcolor="#ecf0f1" style="postion: absolute;">
+                            Room
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
+                            0
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1" style = "position: relative;">
-                        1
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1" style="position: relative;">
+                            1
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        2
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            2
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        3
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            3
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        4
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            4
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        5
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            5
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        6
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            6
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        7
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            7
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        8
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            8
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        9
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            9
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        10
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            10
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        11
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            11
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        12
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            12
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        13
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            13
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        14
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            14
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        15
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            15
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        16
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            16
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        17
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            17
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        18
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            18
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        19
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            19
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        20
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            20
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        21
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            21
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        22
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            22
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
-                        23
-                    </th>
-                    <th width="2px" bgcolor="#ecf0f1">
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
+                            23
+                        </th>
+                        <th width="2px" bgcolor="#ecf0f1">
 
-                    </th>
+                        </th>
 
 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for facility in facility_list %}
+                        <tr>
+                            <td bgcolor="#2C3E50" width="135px" style="position: relative;">
+                                <font color="#ffffff" size="1px">  {{ facility.location }} {{ facility.room_number }}
+                                    <br>
+                                    {{ facility.type }} w/ {{ facility.capacity }} pax </font>
+                            </td>
 
-                </tr>
-            </thead>
-            <tbody>
-                {% for facility in facility_list %}
-             <tr>
-                <td bgcolor="#2C3E50" width="135px" style ="position: relative;">
-                <font color = "#ffffff" size = "1px">  {{ facility.location }} {{ facility.room_number }}<br>
-                        {{ facility.type }} w/ {{ facility.capacity }} pax </font>
-                </td>
-                
-                <td  bgcolor="#D24D57" style ="position: relative;">
-                    1
-                </td>
-                <td bgcolor="#DADFE1" style ="position: relative;">
-                    1
-                </td>
-                
-            </tr>
-            {% endfor %}
 
-        </tbody>
-    </table>
-    {% else %}
+                            {% for x in facility.availability %}
+                                {% if x %}
+                                    <td bgcolor="#D24D57" style="position: relative;">
+                                        1
+                                    </td>
+                                {% else %}
+                                    <td bgcolor="#DADFE1" style="position: relative;">
+                                        0
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
 
-</div>
-<div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
-{% endif %}
-{% endif %}
-</div>
+                    </tbody>
+                </table>
+                {% else %}
+
+            </div>
+            <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
+        {% endif %}
+    {% endif %}
+    </div>
 
 {% endblock %}
