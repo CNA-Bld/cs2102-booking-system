@@ -152,10 +152,10 @@ class Facility(ndb.Model):
             query = query.filter(cls.type == type)
         adv_time = (date - utils.get_today_plus_8()).days
         query = query.filter(cls.min_adv_time <= adv_time)
-        result = query.fetch()
-        for facility in result:
-            if facility.max_adv_time < adv_time or facility.capacity < capacity:
-                result.remove(facility)
+        result = []
+        for facility in query.fetch():
+            if not ((facility.max_adv_time < adv_time) or (facility.capacity < capacity)):
+                result.append(facility)
         return result
 
     def check_availability(self, date):
