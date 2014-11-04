@@ -1,8 +1,25 @@
 {% extends "admin_main.html" %}
 
+{% block additional_css %}
+    <link href="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+
+{% block additional_js %}
+    <script src="https://cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+{% endblock %}
+
 {% block admin_body %}
 
-    <table class="table table-striped">
+    <script>
+        $(document).ready(function () {
+            $('#booking').dataTable({
+                "order": [[ 3, "desc" ]]
+            });
+        });
+    </script>
+
+    <table id="booking" class="table table-striped">
         <thead>
         <tr>
             <th>User</th>
