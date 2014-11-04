@@ -2,7 +2,13 @@
 
 {% block admin_body %}
 
-    <table class="table table-striped">
+    <script>
+        $(document).ready(function () {
+            $('#facility').dataTable();
+        });
+    </script>
+
+    <table id="facility" class="table table-striped">
         <thead>
         <tr>
             <th>Location</th>
@@ -14,10 +20,11 @@
         <tbody>
         {% for facility in facility_list %}
             <tr>
-            <td>{{ facility.location }}</td>
+                <td>{{ facility.location }}</td>
                 <td>{{ facility.room_number }}</td>
-            <td>{{ facility.type }}</td>
-            <td><a href="./?do=update_facility&id={{ facility.id }}" class="btn btn-default btn-xs" role="button">Update</a></td>
+                <td>{{ facility.type }}</td>
+                <td><a href="./?do=update_facility&id={{ facility.id }}" class="btn btn-default btn-xs" role="button">Update</a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
