@@ -119,7 +119,6 @@ class ViewBookingHandler(webapp2.RequestHandler):
         key = self.request.cookies.get('session_key')
         if user is None:
             self.redirect('/login/')
-            return
         elif login.user_session_check(user, key):
             booking = models.Book.get_by_book_id(int(self.request.get('id')))
             if booking.user_id.get().user_id != user:
@@ -133,7 +132,25 @@ class ViewBookingHandler(webapp2.RequestHandler):
             self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
-            return
+
+    def post(self):
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+            booking = models.Book.get_by_book_id(int(self.request.get('id')))
+            if booking.user_id.get().user_id != user:
+                self.response.set_status(403, "Unauthorized!")
+                return
+            else:
+                booking.purpose = self.request.get('purpose')
+                booking.comment = self.request.get('comment')
+                booking.put()
+                self.redirect('./?id=%s' % self.request.get('id'))
+        else:
+            self.redirect('/login/')
+
 
 
 class AdminHandler(webapp2.RequestHandler):
@@ -206,8 +223,8 @@ class InitHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
                                   ('/logout/.*', LogoutHandler),
+                                  ('/manage/booking/.*', ViewBookingHandler),
                                   ('/manage/.*', ManageHandler),
-                                  ('/view_booking/.*', ViewBookingHandler),
                                   ('/admin/.*', AdminHandler),
                                   ('/init/', InitHandler),
                                   ('/.*', MainHandler),

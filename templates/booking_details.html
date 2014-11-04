@@ -1,69 +1,86 @@
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th>Booking No.</th>
-        <th>{{ booking.id }}</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>Facility</td>
-        <td>{{ booking.facility }}</td>
-    </tr>
-    <tr>
-        <td>Date</td>
-        <td>{{ booking.date }}</td>
-    </tr>
-    {% if is_admin %}
+<form action="?id={{ booking.id }}" method="post" class="form-horizontal" role="form">
+    <table class="table table-hover">
+        <thead>
         <tr>
-            <td>User</td>
-            <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}]
-                ({{ booking.booking_user.faculty }})
+            <th>Booking No.</th>
+            <th>{{ booking.id }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Facility</td>
+            <td>{{ booking.facility }}</td>
+        </tr>
+        <tr>
+            <td>Date</td>
+            <td>{{ booking.date }}</td>
+        </tr>
+        {% if is_admin %}
+            <tr>
+                <td>User</td>
+                <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}]
+                    ({{ booking.booking_user.faculty }})
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td>Placed Time</td>
+            <td>{{ booking.place_time }}</td>
+        </tr>
+        <tr>
+            <td>Purpose</td>
+            <td>{% if is_admin %}{{ booking.purpose }}{% else %}<textarea class="form-control" rows="3" name="purpose"
+                    {% if booking.is_processed or booking.is_cancelled %} disabled="disabled" {% endif %}>{{ booking.purpose }}</textarea>{% endif %}
             </td>
         </tr>
-    {% endif %}
-    <tr>
-        <td>Placed Time</td>
-        <td>{{ booking.place_time }}</td>
-    </tr>
-    <tr>
-        <td>Purpose</td>
-        <td>{{ booking.purpose }}</td>
-    </tr>
-    <tr>
-        <td>Comment</td>
-        <td>{{ booking.comment }}</td>
-    </tr>
-    <tr>
-        <td>Status</td>
-        <td>
-            {% if booking.is_processed %}
-                {% if booking.is_approved %}
-                    <span class="label label-success">Approved</span>
+        <tr>
+            <td>Comment</td>
+            <td>{% if is_admin %}{{ booking.comment }}{% else %}<textarea class="form-control" rows="3" name="comment"
+                    {% if booking.is_processed or booking.is_cancelled %} disabled="disabled" {% endif %}>{{ booking.comment }}</textarea>{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                {% if booking.is_processed %}
+                    {% if booking.is_approved %}
+                        <span class="label label-success">Approved</span>
+                    {% else %}
+                        <span class="label label-danger">Declined</span>
+                    {% endif %}
                 {% else %}
-                    <span class="label label-danger">Declined</span>
+                    {% if booking.is_cancelled %}
+                        <span class="label label-default">Cancelled</span>
+                    {% else %}
+                        <span class="label label-primary">Processing</span>
+                    {% endif %}
                 {% endif %}
-            {% else %}
-                {% if booking.is_cancelled %}
-                    <span class="label label-default">Cancelled</span>
-                {% else %}
-                    <span class="label label-primary">Processing</span>
-                {% endif %}
-            {% endif %}
-        </td>
-    </tr>
-    {% if is_admin %}
+            </td>
+        </tr>
+
         <tr>
             <td>Action</td>
             <td>
-                <a href="/admin/?do=approve_booking&id={{ booking.id }}" class="btn btn-success btn-xs"
-                   role="button"
-                   {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Approve</a>
-                <a href="/admin/?do=decline_booking&id={{ booking.id }}" class="btn btn-danger btn-xs"
-                   role="button"
-                   {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Decline</a>
+                {% if is_admin %}
+                    <a href="/admin/?do=approve_booking&id={{ booking.id }}" class="btn btn-success btn-xs"
+                       role="button"
+                       {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Approve</a>
+                    <a href="/admin/?do=decline_booking&id={{ booking.id }}" class="btn btn-danger btn-xs"
+                       role="button"
+                       {% if booking.is_cancelled and not booking.is_processed %}disabled="disabled"{% endif %}>Decline</a>
+                {% else %}
+                    <button type="submit" class="btn btn-default btn-xs"
+                            {% if booking.is_processed or booking.is_cancelled %} disabled="disabled" {% endif %}>Update
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                            data-target="#cancelModel"
+                            {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>
+                        Cancel
+                    </button>
+                {% endif %}
             </td>
         </tr>
-    {% endif %}
-    </tbody>
-</table>
+
+        </tbody>
+    </table>
+</form>

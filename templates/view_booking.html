@@ -2,6 +2,31 @@
 
 {% block main_body %}
 
+    {% if not is_admin and not booking.is_cancelled and not booking.isdeclined %}
+            <div class="modal fade" id="cancelModel" tabindex="-1" role="dialog"
+                 aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span
+                                    aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirm Cancellation</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div>Sure to cancel booking for {{ booking.facility }} on {{ booking.date }}?</div>
+                            <div>This cannot be undone.</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <a href="/manage/?cancel={{ booking.id }}" class="btn btn-danger" role="button"
+                                    {% if booking.is_cancelled or booking.is_declined %}
+                               disabled="disabled" {% endif %}>Confirm</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
     <div class="container" role="main">
         {% include "booking_details.html" %}
     </div>

@@ -62,7 +62,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="/view_booking/?id={{ booking.id }}" class="btn btn-default btn-xs" role="button">Details</a>
+                        <a href="./booking/?id={{ booking.id }}" class="btn btn-default btn-xs" role="button">Details</a>
                         <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
                                 data-target="#cancelModel{{ booking.id }}"
                                 {% if booking.is_cancelled or booking.is_declined %} disabled="disabled" {% endif %}>
