@@ -151,7 +151,7 @@ class Facility(ndb.Model):
         if type:
             query = query.filter(cls.type == type)
         adv_time = (date - utils.get_today_plus_8()).days
-        query = query.filter(cls.min_adv_time <= adv_time)
+        query = query.filter(cls.min_adv_time <= adv_time).order(cls.type, cls.room_number)
         result = []
         for facility in query.fetch():
             if not ((facility.max_adv_time < adv_time) or (facility.capacity < capacity)):
@@ -179,6 +179,7 @@ class Facility(ndb.Model):
         for f in query:
             if f.location not in loc_list:
                 loc_list.append(f.location)
+        loc_list.sort()
         return loc_list
 
     @classmethod
@@ -188,11 +189,16 @@ class Facility(ndb.Model):
         for f in query:
             if f.type not in type_list:
                 type_list.append(f.type)
+        type_list.sort()
         return type_list
 
     @classmethod
     def get_by_facility_id(cls, facility_id):
         return ndb.Key(cls, facility_id).get()
+
+    @classmethod
+    def get_all(cls):
+        return cls.query().order(cls.location, cls.type, cls.room_number).fetch()
 
     def to_string(self):
         return "%s %s (%s)" % (self.location, self.room_number, self.type)
