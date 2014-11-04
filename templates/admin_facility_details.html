@@ -29,7 +29,7 @@
 
                     <div class="col-sm-10">
                         <input id="max_time_per_day" type="text" name="max_time_per_day" class="form-control"
-                               autocomplete="false" value="{{ facility.max_time_per_day or ''}}">
+                               autocomplete="false" value="{{ facility.max_time_per_day or '24'}}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -37,7 +37,7 @@
 
                     <div class="col-sm-10">
                         <input id="price_per_hr" type="text" name="price_per_hr" class="form-control"
-                               autocomplete="false" value="{{ facility.price_per_hr or ''}}">
+                               autocomplete="false" value="{{ facility.price_per_hr or '0'}}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -45,7 +45,7 @@
 
                     <div class="col-sm-10">
                         <input id="min_adv_time" type="text" name="min_adv_time" class="form-control"
-                               autocomplete="false" value="{{ facility.min_adv_time or ''}}">
+                               autocomplete="false" value="{{ facility.min_adv_time or '0'}}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -53,7 +53,7 @@
 
                     <div class="col-sm-10">
                         <input id="max_adv_time" type="text" name="max_adv_time" class="form-control"
-                               autocomplete="false" value="{{ facility.max_adv_time or ''}}">
+                               autocomplete="false" value="{{ facility.max_adv_time or '0'}}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -61,7 +61,7 @@
 
                     <div class="col-sm-10">
                         <input id="capacity" type="text" name="capacity" class="form-control"
-                               autocomplete="false" value="{{ facility.capacity or ''}}">
+                               autocomplete="false" value="{{ facility.capacity or '0'}}">
                     </div>
                 </div>
                 <div class="form-group">
