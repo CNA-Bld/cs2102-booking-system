@@ -8,7 +8,7 @@ class BookTime():
         if data is not None:
             self.data = data
         else:
-            self.data = {i: False for i in range(0, 48)}
+            self.data = [False for i in range(0, 48)]
 
     def __repr__(self):
         return repr(self.data)
@@ -34,12 +34,6 @@ class BookTime():
             inv.data[i] = not self.data[i]
         return inv
 
-    def to_list(self):
-        l = []
-        for i in range(0, 48):
-            l.append(self.data[i])
-        return l
-
     @classmethod
     def create_opening_hours(cls, start, end):
         data = {i: False for i in range(0, 48)}
@@ -62,11 +56,12 @@ class BookTime():
         if self.data[0]:
             curr_start = 0
         for i in range(1, 48):
-            if self.data[i] and not self.data[i-1]:
+            if self.data[i] and not self.data[i - 1]:
                 curr_start = i
-            if not self.data[i] and self.data[i-1]:
+            if not self.data[i] and self.data[i - 1]:
                 curr_end = i
-                dict_list["start=%d&end=%d" % (curr_start, curr_end)] = utils.timeslot_tuple_to_js((curr_start, curr_end))
+                dict_list["start=%d&end=%d" % (curr_start, curr_end)] = utils.timeslot_tuple_to_js(
+                    (curr_start, curr_end))
         if self.data[47]:
             dict_list["start=%d&end=%d" % (curr_start, 48)] = utils.timeslot_tuple_to_js((curr_start, 48))
         return dict_list
