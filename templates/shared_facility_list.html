@@ -1,0 +1,46 @@
+{% block additional_css %}
+    <link href="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.css"
+          rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/1.0.2/css/dataTables.responsive.css" rel="stylesheet">
+{% endblock %}
+
+{% block additional_js %}
+    <script src="https://cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/1.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+{% endblock %}
+
+<script>
+    $(document).ready(function () {
+        $('#facility').dataTable();
+    });
+</script>
+
+<table id="facility" class="table table-striped dt-responsive">
+    <thead>
+    <tr>
+        <th>Location</th>
+        <th>Room Number</th>
+        <th>Type</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for facility in facility_list %}
+        <tr>
+            <td>{{ facility.location }}</td>
+            <td>{{ facility.room_number }}</td>
+            <td>{{ facility.type }}</td>
+            <td>
+                {% if is_admin %}
+                    <a href="./?do=update_facility&id={{ facility.id }}" class="btn btn-default btn-xs"
+                       role="button">Update</a>
+                {% else %}
+                    <a href="/facilities/details/?id={{ facility.id }}" class="btn btn-default btn-xs"
+                       role="button">Details</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

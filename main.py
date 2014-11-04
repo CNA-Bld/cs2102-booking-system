@@ -80,7 +80,7 @@ class MainHandler(webapp2.RequestHandler):
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
-            template = JINJA_ENVIRONMENT.get_template('main.html')
+            template = JINJA_ENVIRONMENT.get_template('user_main.html')
             self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
@@ -107,7 +107,7 @@ class ManageHandler(webapp2.RequestHandler):
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
-            template = JINJA_ENVIRONMENT.get_template('manage.html')
+            template = JINJA_ENVIRONMENT.get_template('user_manage_bookings.html')
             self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
@@ -128,7 +128,7 @@ class ViewBookingHandler(webapp2.RequestHandler):
 
             template_values = dict(base_template_values, **native_values)
 
-            template = JINJA_ENVIRONMENT.get_template('view_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('shared_booking_details.html')
             self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
@@ -152,6 +152,25 @@ class ViewBookingHandler(webapp2.RequestHandler):
             self.redirect('/login/')
 
 
+class FacilityListHandler(webapp2.RequestHandler):
+    def get(self):
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+
+            native_values = {'user': user,
+                             'is_admin': False,
+                             'facility_list': [facility.to_dict() for facility in models.Facility.get_all()]}
+
+            template_values = dict(base_template_values, **native_values)
+
+            template = JINJA_ENVIRONMENT.get_template('user_facilities.html')
+            self.response.write(template.render(template_values))
+        else:
+            self.redirect('/login/')
+
 
 class AdminHandler(webapp2.RequestHandler):
     def get(self):
@@ -159,28 +178,29 @@ class AdminHandler(webapp2.RequestHandler):
         if self.request.get('do') == 'create_facility':
             template_values['facility'] = models.Facility()
             template = JINJA_ENVIRONMENT.get_template('admin_create_facility.html')
-        elif self.request.get('do') == 'manage_facility':
+        elif self.request.get('do') == 'manage_facilities':
             template_values['facility_list'] = [facility.to_dict() for facility in models.Facility.get_all()]
-            template = JINJA_ENVIRONMENT.get_template('admin_manage_facility.html')
+            template_values['is_admin'] = True
+            template = JINJA_ENVIRONMENT.get_template('admin_manage_facilities.html')
         elif self.request.get('do') == 'update_facility':
             template_values['facility'] = models.Facility.get_by_facility_id(int(self.request.get('id'))).to_dict()
             template = JINJA_ENVIRONMENT.get_template('admin_update_facility.html')
         elif self.request.get('do') == 'approve_booking':
             models.Book.get_by_book_id(int(self.request.get('id'))).approve()
-            self.redirect('./?do=manage_booking')
+            self.redirect('./?do=manage_bookings')
             return
         elif self.request.get('do') == 'decline_booking':
             models.Book.get_by_book_id(int(self.request.get('id'))).decline()
-            self.redirect('./?do=manage_booking')
+            self.redirect('./?do=manage_bookings')
             return
-        elif self.request.get('do') == 'manage_booking':
+        elif self.request.get('do') == 'manage_bookings':
             template_values['booking_list'] = [book.to_dict() for book in
                                                models.Book.query().order(-models.Book.place_time).fetch()]
-            template = JINJA_ENVIRONMENT.get_template('admin_manage_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('admin_manage_bookings.html')
         elif self.request.get('do') == 'view_booking':
             template_values['booking'] = models.Book.get_by_book_id(int(self.request.get('id'))).to_dict()
             template_values['is_admin'] = True
-            template = JINJA_ENVIRONMENT.get_template('view_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('shared_booking_details.html')
         else:
             template = JINJA_ENVIRONMENT.get_template('admin_main.html')
         self.response.write(template.render(template_values))
@@ -212,7 +232,7 @@ class AdminHandler(webapp2.RequestHandler):
             facility.sun_hr = repr(models.BookTime.create_opening_hours(int(self.request.get('sun_hr_start')),
                                                                         int(self.request.get('sun_hr_end'))))
             facility.put()
-            self.redirect('/admin/?do=manage_facility')
+            self.redirect('/admin/?do=manage_facilities')
 
 
 class InitHandler(webapp2.RequestHandler):
@@ -225,6 +245,7 @@ app = webapp2.WSGIApplication([
                                   ('/logout/.*', LogoutHandler),
                                   ('/manage/booking/.*', ViewBookingHandler),
                                   ('/manage/.*', ManageHandler),
+                                  ('/facilities/.*', FacilityListHandler),
                                   ('/admin/.*', AdminHandler),
                                   ('/init/', InitHandler),
                                   ('/.*', MainHandler),
