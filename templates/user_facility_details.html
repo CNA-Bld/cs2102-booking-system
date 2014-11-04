@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block main_body %}
+
+    <div class="container" role="main">
+        <div class="container" role="main">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Facility ID</th>
+                    <th>{{ facility.id }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Location</td>
+                    <td>{{ facility.location }}</td>
+                </tr>
+                <tr>
+                    <td>Type</td>
+                    <td>{{ facility.type }}</td>
+                </tr>
+                <tr>
+                    <td>Room Number</td>
+                    <td>{{ facility.room_number }}</td>
+                </tr>
+                <tr>
+                    <td>Capacity</td>
+                    <td>{{ facility.capacity }}</td>
+                </tr>
+                <tr>
+                    <td>Max Hours per Day</td>
+                    <td>{{ facility.max_time_per_day }}</td>
+                </tr>
+                <tr>
+                    <td>Price per Hour</td>
+                    <td>{{ facility.price_per_hr }}</td>
+                </tr>
+                <tr>
+                    <td>Booking in Advance</td>
+                    <td>{{ facility.min_adv_time }} to {{ facility.max_adv_time }} days</td>
+                </tr>
+                <tr>
+                    <td>Comment</td>
+                    <td>{{ facility.comment }}</td>
+                </tr>
+                <tr>
+                    <td>Auto Approval</td>
+                    <td>
+                        {% if facility.is_auto_approval %}
+                            <span class="label label-success">Yes</span>
+                        {% else %}
+                            <span class="label label-danger">No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Opening Hours</td>
+                    <td>[[[STUB]]]</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

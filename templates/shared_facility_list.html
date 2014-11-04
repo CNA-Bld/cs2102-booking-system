@@ -22,6 +22,7 @@
         <th>Location</th>
         <th>Room Number</th>
         <th>Type</th>
+        <th>Auto Approval</th>
         <th>Action</th>
     </tr>
     </thead>
@@ -31,6 +32,13 @@
             <td>{{ facility.location }}</td>
             <td>{{ facility.room_number }}</td>
             <td>{{ facility.type }}</td>
+            <td>
+                {% if facility.is_auto_approval %}
+                    <span class="label label-success">Yes</span>
+                {% else %}
+                    <span class="label label-danger">No</span>
+                {% endif %}
+            </td>
             <td>
                 {% if is_admin %}
                     <a href="./?do=update_facility&id={{ facility.id }}" class="btn btn-default btn-xs"
