@@ -146,7 +146,7 @@ class Facility(ndb.Model):
         if type:
             query = query.filter(cls.type == type)
         adv_time = (date - utils.get_today_plus_8()).days
-        query = query.filter(cls.min_adv_time <= adv_time).order(cls.type, cls.room_number)
+        query = query.filter(cls.min_adv_time <= adv_time)
         result = []
         for facility in query.fetch():
             if not ((facility.max_adv_time < adv_time) or (facility.capacity < capacity)):
