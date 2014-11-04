@@ -152,6 +152,29 @@ class ViewBookingHandler(webapp2.RequestHandler):
             self.redirect('/login/')
 
 
+class NewBookingHandler(webapp2.RequestHandler):
+    def get(self):
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+            facility = models.Facility.get_by_facility_id(self.request.get('id'))
+            date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+
+            native_values = {'user': user, }
+
+            template_values = dict(base_template_values, **native_values)
+
+            template = JINJA_ENVIRONMENT.get_template('new_booking.html')
+            self.response.write(template.render(template_values))
+        else:
+            self.redirect('/login/')
+
+    def post(self):
+        pass
+
+
 class FacilityListHandler(webapp2.RequestHandler):
     def get(self):
         user = self.request.cookies.get('user')
@@ -245,6 +268,7 @@ app = webapp2.WSGIApplication([
                                   ('/logout/.*', LogoutHandler),
                                   ('/manage/booking/.*', ViewBookingHandler),
                                   ('/manage/.*', ManageHandler),
+                                  ('/new_booking/.*', NewBookingHandler),
                                   ('/facilities/.*', FacilityListHandler),
                                   ('/admin/.*', AdminHandler),
                                   ('/init/', InitHandler),
