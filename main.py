@@ -77,7 +77,7 @@ class MainHandler(webapp2.RequestHandler):
                              'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type, 'is_querying': is_querying,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list,
-                             'error': self.request.get('error'), 'user': user}
+                             'weekday': date.strftime("%A"), 'error': self.request.get('error'), 'user': user}
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
