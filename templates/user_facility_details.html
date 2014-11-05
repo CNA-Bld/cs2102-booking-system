@@ -41,10 +41,11 @@
                         calculable: true,
                         series: [
                             {
+                                name: 'Faculty Breakdown',
                                 type: 'pie',
                                 radius: [20, 60],
                                 center: ['25%', '50%'],
-                                roseType: 'radius',
+                                roseType: 'area',
                                 data: [
                                     {% for key, value in facility.stat.faculty_breakdown.iteritems() %}
                                         {value: {{ value }}, name: '{{ key }}'},
@@ -52,7 +53,7 @@
                                 ]
                             },
                             {
-                                name: '面积模式',
+                                name: 'Status Breakdown',
                                 type: 'pie',
                                 radius: [20, 60],
                                 center: ['75%', '50%'],
@@ -128,14 +129,12 @@
                 <tr>
                     <td>Opening Hours</td>
                     <td>
-                        Weekdays: {% if facility.weekday_hr.end > 0 %}{{ facility.weekday_hr.start }}:00 to
-                        {{ facility.weekday_hr.end }}:00{% else %}Closed{% endif %}<br>
+                        Weekdays:
+                        {% if facility.weekday_hr.end > 0 %}{{ facility.weekday_hr.start }}:00 to{{ facility.weekday_hr.end }}:00{% else %}Closed{% endif %}<br>
                         Saturdays:
-                        {% if facility.sat_hr.end > 0 %}{{ facility.sat_hr.start }}:00 to {{ facility.sat_hr.end }}
-                            :00{% else %}Closed{% endif %}<br>
+                        {% if facility.sat_hr.end > 0 %}{{ facility.sat_hr.start }}:00 to {{ facility.sat_hr.end }}:00{% else %}Closed{% endif %}<br>
                         Sundays:
-                        {% if facility.sun_hr.end > 0 %}{{ facility.sun_hr.start }}:00 to {{ facility.sun_hr.end }}
-                            :00{% else %}Closed{% endif %}
+                        {% if facility.sun_hr.end > 0 %}{{ facility.sun_hr.start }}:00 to {{ facility.sun_hr.end }}:00{% else %}Closed{% endif %}
                     </td>
                 </tr>
                 <tr>
