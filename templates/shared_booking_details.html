@@ -39,7 +39,11 @@
                 <tbody>
                 <tr>
                     <td>Facility</td>
-                    <td>{{ booking.facility }}</td>
+                    <td>
+                        {{ booking.facility_str }}
+                        <a href="/facilities/details/?id={{ booking.facility_id }}" class="btn btn-default btn-xs"
+                               role="button">Details</a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Date</td>

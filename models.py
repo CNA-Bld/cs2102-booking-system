@@ -315,7 +315,8 @@ class Book(ndb.Model):
                 return 'Processing'
 
     def to_dict(self):
-        return {'facility': self.facility_id.get().to_string(),
+        return {'facility_str': self.facility_id.get().to_string(),
+                'facility_id': self.facility_id.id(),
                 'date': self.date.strftime("%d-%m-%Y"),
                 'is_approved': self.is_approved, 'is_processed': self.is_processed,
                 'is_cancelled': self.is_cancelled,
