@@ -258,7 +258,6 @@ class AdminHandler(webapp2.RequestHandler):
             else:
                 facility.is_auto_approval = False
             facility.max_time_per_day = int(self.request.get('max_time_per_day'))
-            print self.request.get('price_per_hr')
             facility.price_per_hr = float(self.request.get('price_per_hr'))
             facility.min_adv_time = int(self.request.get('min_adv_time'))
             facility.max_adv_time = int(self.request.get('max_adv_time'))
