@@ -41,7 +41,7 @@ class BookTime():
             data[i] = False
         return BookTime(data).inverted()
 
-    def get_opening_hours(self):
+    def to_single_range(self):
         flag = False
         for i in self.data:
             if i:
@@ -57,6 +57,16 @@ class BookTime():
             if self.data[i] is False and self.data[i - 1] is True:
                 end = i / 2
         return {'start': start, 'end': end}
+
+    def to_single_range_str(self):
+        start = 0
+        end = 48
+        for i in range(1, 48):
+            if self.data[i] is True and self.data[i - 1] is False:
+                start = i
+            if self.data[i] is False and self.data[i - 1] is True:
+                end = i
+        return {'start': utils.slot_to_str(start), 'end': utils.slot_to_str(end)}
 
     def to_dict_list(self):
         dict_list = {}
@@ -223,9 +233,9 @@ class Facility(ndb.Model):
     def to_dict(self):
         return {'location': self.location, 'type': self.type, 'room_number': self.room_number,
                 'is_auto_approval': self.is_auto_approval,
-                'weekday_hr': BookTime(eval(self.weekday_hr)).get_opening_hours(),
-                'sat_hr': BookTime(eval(self.sat_hr)).get_opening_hours(),
-                'sun_hr': BookTime(eval(self.sun_hr)).get_opening_hours(), 'max_time_per_day': self.max_time_per_day,
+                'weekday_hr': BookTime(eval(self.weekday_hr)).to_single_range(),
+                'sat_hr': BookTime(eval(self.sat_hr)).to_single_range(),
+                'sun_hr': BookTime(eval(self.sun_hr)).to_single_range(), 'max_time_per_day': self.max_time_per_day,
                 'price_per_hr': self.price_per_hr, 'min_adv_time': self.min_adv_time, 'max_adv_time': self.max_adv_time,
                 'capacity': self.capacity, 'comment': self.comment, 'id': self.key.id(), 'stat': self.construct_stat()}
 
@@ -334,4 +344,5 @@ class Book(ndb.Model):
                 'is_declined': self.is_processed and not self.is_approved,
                 'id': self.key.id(), 'comment': self.comment, 'purpose': self.purpose,
                 'booking_user': self.user_id.get().to_dict(),
+                'time': BookTime(eval(self.time)).to_single_range_str(),
                 'place_time': self.place_time.strftime("%d-%m-%Y %H:%M:%S")}

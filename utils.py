@@ -19,3 +19,10 @@ def ending_time_fix(slotid):
 def timeslot_tuple_to_js(t):
     return "new Date(0, 0, 0, %d, %d, 0), new Date(0, 0, 0, %d, %d, 59)" % (
         t[0] / 2, t[0] % 2 * 30, ending_time_fix(t[1])[0], ending_time_fix(t[1])[1])
+
+
+def slot_to_str(slot):
+    if slot % 2 == 0:
+        return "%d:00" % (slot / 2)
+    else:
+        return "%d:30" % (slot / 2)

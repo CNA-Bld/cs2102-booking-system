@@ -45,6 +45,10 @@
                     <td>Date</td>
                     <td>{{ booking.date }}</td>
                 </tr>
+                <tr>
+                    <td>Time</td>
+                    <td>{{ booking.time.start }} to {{ booking.time.end }}</td>
+                </tr>
                 {% if is_admin %}
                     <tr>
                         <td>User</td>
