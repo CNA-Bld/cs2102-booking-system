@@ -22,6 +22,7 @@
         <th>Location</th>
         <th>Room Number</th>
         <th>Type</th>
+        <th>Booking Count</th>
         <th>Auto Approval</th>
         <th>Action</th>
     </tr>
@@ -32,6 +33,7 @@
             <td>{{ facility.location }}</td>
             <td>{{ facility.room_number }}</td>
             <td>{{ facility.type }}</td>
+            <td>{{ facility.stat.total_bookings }}</td>
             <td>
                 {% if facility.is_auto_approval %}
                     <span class="label label-success">Yes</span>

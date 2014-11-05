@@ -205,6 +205,21 @@ class Facility(ndb.Model):
     def to_string(self):
         return "%s %s (%s)" % (self.location, self.room_number, self.type)
 
+    def construct_stat(self):
+        bookings = Book.get_all_bookings(self)
+        stat_dict = {'total_bookings': len(bookings), 'faculty_breakdown': {}, 'status_breakdown': {}}
+        for booking in bookings:
+            if booking.get_status() in stat_dict['status_breakdown']:
+                stat_dict['status_breakdown'][booking.get_status()] += 1
+            else:
+                stat_dict['status_breakdown'][booking.get_status()] = 1
+            user = booking.user_id.get()
+            if user.faculty in stat_dict['faculty_breakdown']:
+                stat_dict['faculty_breakdown'][user.faculty] += 1
+            else:
+                stat_dict['faculty_breakdown'][user.faculty] = 1
+        return stat_dict
+
     def to_dict(self):
         return {'location': self.location, 'type': self.type, 'room_number': self.room_number,
                 'is_auto_approval': self.is_auto_approval,
@@ -212,7 +227,7 @@ class Facility(ndb.Model):
                 'sat_hr': BookTime(eval(self.sat_hr)).get_opening_hours(),
                 'sun_hr': BookTime(eval(self.sun_hr)).get_opening_hours(), 'max_time_per_day': self.max_time_per_day,
                 'price_per_hr': self.price_per_hr, 'min_adv_time': self.min_adv_time, 'max_adv_time': self.max_adv_time,
-                'capacity': self.capacity, 'comment': self.comment, 'id': self.key.id()}
+                'capacity': self.capacity, 'comment': self.comment, 'id': self.key.id(), 'stat': self.construct_stat()}
 
 
 class Book(ndb.Model):
@@ -243,6 +258,11 @@ class Book(ndb.Model):
     @classmethod
     def find_booking(cls, facility, date):
         query = cls.query(cls.facility_id == facility.key, cls.date == date, cls.is_cancelled != True)
+        return query.fetch()
+
+    @classmethod
+    def get_all_bookings(cls, facility):
+        query = cls.query(cls.facility_id == facility.key)
         return query.fetch()
 
     @classmethod
@@ -293,6 +313,18 @@ class Book(ndb.Model):
         self.is_processed = False
         self.is_approved = False
         self.put()
+
+    def get_status(self):
+        if self.is_processed:
+            if self.is_approved:
+                return 'Approved'
+            else:
+                return 'Declined'
+        else:
+            if self.is_cancelled:
+                return 'Cancelled'
+            else:
+                return 'Processing'
 
     def to_dict(self):
         return {'facility': self.facility_id.get().to_string(),
