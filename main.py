@@ -215,13 +215,12 @@ class FacilityListHandler(webapp2.RequestHandler):
 
 class AdminHandler(webapp2.RequestHandler):
     def get(self):
-        template_values = {'user': 'Dummy Admin System'}
+        template_values = {'user': 'Dummy Admin System', 'is_admin': True}
         if self.request.get('do') == 'create_facility':
             template_values['facility'] = models.Facility()
             template = JINJA_ENVIRONMENT.get_template('admin_create_facility.html')
         elif self.request.get('do') == 'manage_facilities':
             template_values['facility_list'] = [facility.to_dict() for facility in models.Facility.get_all()]
-            template_values['is_admin'] = True
             template = JINJA_ENVIRONMENT.get_template('admin_manage_facilities.html')
         elif self.request.get('do') == 'update_facility':
             template_values['facility'] = models.Facility.get_by_facility_id(int(self.request.get('id'))).to_dict()
@@ -240,7 +239,6 @@ class AdminHandler(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('admin_manage_bookings.html')
         elif self.request.get('do') == 'view_booking':
             template_values['booking'] = models.Book.get_by_book_id(int(self.request.get('id'))).to_dict()
-            template_values['is_admin'] = True
             template = JINJA_ENVIRONMENT.get_template('shared_booking_details.html')
         else:
             template = JINJA_ENVIRONMENT.get_template('admin_main.html')
