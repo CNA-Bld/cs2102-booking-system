@@ -303,11 +303,6 @@ class AdminHandler(webapp2.RequestHandler):
             self.redirect('/admin/?do=manage_facilities')
 
 
-class InitHandler(webapp2.RequestHandler):
-    def get(self):
-        models.Book.init()
-
-
 app = webapp2.WSGIApplication([
                                   ('/login/.*', LoginHandler),
                                   ('/logout/.*', LogoutHandler),
@@ -317,6 +312,5 @@ app = webapp2.WSGIApplication([
                                   ('/facilities/details/.*', FacilityDetailsHandler),
                                   ('/facilities/.*', FacilityListHandler),
                                   ('/admin/.*', AdminHandler),
-                                  ('/init/', InitHandler),
                                   ('/.*', MainHandler),
                               ], debug=True)

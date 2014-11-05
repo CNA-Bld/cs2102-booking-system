@@ -146,24 +146,6 @@ class Facility(ndb.Model):
     comment = ndb.StringProperty()
 
     @classmethod
-    def init(cls):
-        ins = cls()
-        ins.location = 'COM1'
-        ins.type = 'Programming Lab'
-        ins.room_number = 'B111'
-        ins.is_auto_approval = False
-        ins.weekday_hr = repr(BookTime())
-        ins.sat_hr = repr(BookTime())
-        ins.sun_hr = repr(BookTime())
-        ins.max_time_per_day = 8
-        ins.price_per_hr = 0.0
-        ins.min_adv_time = 0
-        ins.max_adv_time = 7
-        ins.capacity = 40
-        ins.comment = '?'
-        ins.put()
-
-    @classmethod
     def apply_filter(cls, location, type, capacity, date):
         query = cls.query()
         query = query.filter(cls.location == location)
@@ -259,19 +241,6 @@ class Book(ndb.Model):
     facility_id = ndb.KeyProperty()
     user_id = ndb.KeyProperty()
     place_time = ndb.DateTimeProperty()
-
-    @classmethod
-    def init(cls):
-        b = Book()
-        b.date = utils.get_today_plus_8()
-        tmp = {i: False for i in range(0, 48)}
-        tmp[16] = True
-        b.time = repr(tmp)
-        b.purpose = 'purpose'
-        b.comment = 'comment'
-        b.facility_id = (Facility.query().fetch())[1].key
-        b.user_id = User.query().get().key
-        b.place()
 
     @classmethod
     def find_booking(cls, facility, date):
