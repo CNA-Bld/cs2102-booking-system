@@ -168,7 +168,8 @@ class NewBookingHandler(webapp2.RequestHandler):
 
             native_values = {'user': user, 'date': date.strftime("%d-%m-%Y"), 'facility': facility.to_string(),
                              'capacity': facility.capacity, 'start_slot': start_slot, 'end_slot': end_slot,
-                             'max_slot': facility.max_time_per_day * 2, 'id': self.request.get('id')}
+                             'max_slot': facility.max_time_per_day * 2, 'id': self.request.get('id'),
+                             'price': facility.price_per_hr, 'is_auto_approval': facility.is_auto_approval}
 
             template_values = dict(base_template_values, **native_values)
 
