@@ -26,3 +26,7 @@ def slot_to_str(slot):
         return "%d:00" % (slot / 2)
     else:
         return "%d:30" % (slot / 2)
+
+
+def str_to_slot(time_str):
+    return 2 * int(time_str[:2]) + (1 if time_str[-2:] == '30' else 0)

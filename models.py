@@ -41,6 +41,13 @@ class BookTime():
             data[i] = False
         return BookTime(data)
 
+    @classmethod
+    def create_booking_time(cls, start, end):
+        data = [False] * 48
+        for i in range(start, end):
+            data[i] = True
+        return BookTime(data)
+
     def to_single_opening_hrs(self):
         flag = False
         for i in self.data:
@@ -174,7 +181,7 @@ class Facility(ndb.Model):
         bookings = Book.find_booking(self, date)
         available_time = BookTime()
         for booking in bookings:
-            book_time = BookTime(eval(booking.time))
+            book_time = BookTime(booking.time)
             available_time = available_time.union(book_time)
         if date.weekday() == 5:
             available_time = available_time.union(BookTime(eval(self.sat_hr)))
@@ -235,7 +242,8 @@ class Facility(ndb.Model):
                 'is_auto_approval': self.is_auto_approval,
                 'weekday_hr': BookTime(eval(self.weekday_hr)).to_single_opening_hrs(),
                 'sat_hr': BookTime(eval(self.sat_hr)).to_single_opening_hrs(),
-                'sun_hr': BookTime(eval(self.sun_hr)).to_single_opening_hrs(), 'max_time_per_day': self.max_time_per_day,
+                'sun_hr': BookTime(eval(self.sun_hr)).to_single_opening_hrs(),
+                'max_time_per_day': self.max_time_per_day,
                 'price_per_hr': self.price_per_hr, 'min_adv_time': self.min_adv_time, 'max_adv_time': self.max_adv_time,
                 'capacity': self.capacity, 'comment': self.comment, 'id': self.key.id(), 'stat': self.construct_stat()}
 
@@ -287,7 +295,7 @@ class Book(ndb.Model):
     def check(self):
         facility = self.facility_id.get()
         available_time = facility.check_availability(self.date)
-        if available_time.is_conflicted(BookTime(eval(self.time))):
+        if available_time.is_conflicted(BookTime(self.time)):
             return False
         return facility.min_adv_time <= (self.date - utils.get_today_plus_8()).days <= facility.max_adv_time
 
@@ -305,6 +313,7 @@ class Book(ndb.Model):
                 self.is_processed = False
                 self.is_cancelled = False
             self.put()
+            return True
 
     def approve(self):
         self.is_processed = True
@@ -344,5 +353,5 @@ class Book(ndb.Model):
                 'is_declined': self.is_processed and not self.is_approved,
                 'id': self.key.id(), 'comment': self.comment, 'purpose': self.purpose,
                 'booking_user': self.user_id.get().to_dict(),
-                'time': BookTime(eval(self.time)).to_single_range_str_bookings(),
+                'time': BookTime(self.time).to_single_range_str_bookings(),
                 'place_time': self.place_time.strftime("%d-%m-%Y %H:%M:%S")}

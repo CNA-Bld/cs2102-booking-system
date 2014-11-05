@@ -76,7 +76,8 @@ class MainHandler(webapp2.RequestHandler):
             native_values = {'location_list': models.Facility.get_loc_list(), 'query_string': self.request.query_string,
                              'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type, 'is_querying': is_querying,
-                             'selected_capacity': capacity, 'facility_list': facilities_dict_list, 'user': user}
+                             'selected_capacity': capacity, 'facility_list': facilities_dict_list,
+                             'error': self.request.get('error'), 'user': user}
             template_values = dict(base_template_values, **native_values)
             # self.response.out.write(template_values)
 
@@ -159,20 +160,49 @@ class NewBookingHandler(webapp2.RequestHandler):
         if user is None:
             self.redirect('/login/')
         elif login.user_session_check(user, key):
-            facility = models.Facility.get_by_facility_id(self.request.get('id'))
+            facility = models.Facility.get_by_facility_id(int(self.request.get('id')))
             date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
 
-            native_values = {'user': user, }
+            start_slot = int(self.request.get('start'))
+            end_slot = int(self.request.get('end'))
+
+            native_values = {'user': user, 'date': date.strftime("%d-%m-%Y"), 'facility': facility.to_string(),
+                             'capacity': facility.capacity, 'start_slot': start_slot, 'end_slot': end_slot,
+                             'max_slot': facility.max_time_per_day * 2, 'id': self.request.get('id')}
 
             template_values = dict(base_template_values, **native_values)
 
-            template = JINJA_ENVIRONMENT.get_template('new_booking.html')
+            template = JINJA_ENVIRONMENT.get_template('user_new_booking.html')
             self.response.write(template.render(template_values))
         else:
             self.redirect('/login/')
 
     def post(self):
-        pass
+        user = self.request.cookies.get('user')
+        key = self.request.cookies.get('session_key')
+        if user is None:
+            self.redirect('/login/')
+        elif login.user_session_check(user, key):
+            facility = models.Facility.get_by_facility_id(int(self.request.get('id')))
+            date = datetime.datetime.strptime(self.request.get('date'), "%d-%m-%Y").date()
+
+            start_slot = utils.str_to_slot(self.request.get('start_time'))
+            end_slot = utils.str_to_slot(self.request.get('end_time'))
+
+            print start_slot
+
+            time = models.BookTime.create_booking_time(start_slot, end_slot)
+
+            booking = models.Book(date=date, purpose=self.request.get('purpose'), comment=self.request.get('comment'),
+                                  facility_id=facility.key, user_id=models.User.get_user_by_id(user).key,
+                                  time=time.data)
+
+            if booking.place():
+                self.redirect('/manage/')
+            else:
+                self.redirect('/?error=Something went wrong, please try again.')
+        else:
+            self.redirect('/login/')
 
 
 class FacilityDetailsHandler(webapp2.RequestHandler):

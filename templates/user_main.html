@@ -64,7 +64,7 @@
                 dataTable.addRows([
                     {% for facility in facility_list %}
                         {% for key, value in facility.availability.iteritems() %}
-                            [ '{{ facility.room_number }} {{ facility.type }}', '/add_booking/?id={{ facility.id }}&date={{ selected_date }}&{{ key|safe }}', '\
+                            [ '{{ facility.room_number }} {{ facility.type }}', '/new_booking/?id={{ facility.id }}&date={{ selected_date }}&{{ key|safe }}', '\
                                 {% if facility.is_auto_approval %}[Auto Approval]{% else %}[Manual Approval]{% endif %}\
                         Capacity: {{ facility.capacity }}' , {{ value }}],
                         {% endfor %}
@@ -95,6 +95,10 @@
 
         {% if is_querying and not facility_list %}
             <div class="alert alert-warning" role="alert">No available facility found. Please refine criteria.</div>
+        {% endif %}
+
+        {% if error %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
         {% endif %}
 
         <div class="panel panel-default">
