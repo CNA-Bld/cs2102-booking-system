@@ -36,9 +36,9 @@ class BookTime():
 
     @classmethod
     def create_opening_hours(cls, start, end):
-        data = {i: False for i in range(0, 48)}
+        data = [True] * 48
         for i in range(start * 2, end * 2):
-            data[i] = True
+            data[i] = False
         return BookTime(data).inverted()
 
     def get_opening_hours(self):
