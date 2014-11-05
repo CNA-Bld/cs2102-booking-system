@@ -42,6 +42,13 @@ class BookTime():
         return BookTime(data).inverted()
 
     def get_opening_hours(self):
+        flag = False
+        for i in self.data:
+            if i:
+                flag = True
+                break
+        if not flag:
+            return {'start': 0, 'end': 0}
         start = 0
         end = 24
         for i in range(1, 48):
