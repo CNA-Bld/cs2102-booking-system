@@ -130,7 +130,7 @@
                     <td>Opening Hours</td>
                     <td>
                         Weekdays:
-                        {% if facility.weekday_hr.end > 0 %}{{ facility.weekday_hr.start }}:00 to{{ facility.weekday_hr.end }}:00{% else %}Closed{% endif %}<br>
+                        {% if facility.weekday_hr.end > 0 %}{{ facility.weekday_hr.start }}:00 to {{ facility.weekday_hr.end }}:00{% else %}Closed{% endif %}<br>
                         Saturdays:
                         {% if facility.sat_hr.end > 0 %}{{ facility.sat_hr.start }}:00 to {{ facility.sat_hr.end }}:00{% else %}Closed{% endif %}<br>
                         Sundays:

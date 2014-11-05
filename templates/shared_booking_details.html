@@ -64,7 +64,7 @@
                 <tr>
                     <td>Purpose</td>
                     <td>{% if is_admin %}{{ booking.purpose }}{% else %}
-                        <textarea class="form-control" rows="3" name="purpose"
+                        <textarea class="form-control" rows="2" name="purpose"
                                 {% if booking.is_processed or booking.is_cancelled %} disabled="disabled" {% endif %}
                                 >{{ booking.purpose }}</textarea>{% endif %}
                     </td>
@@ -72,7 +72,7 @@
                 <tr>
                     <td>Comment</td>
                     <td>{% if is_admin %}{{ booking.comment }}{% else %}
-                        <textarea class="form-control" rows="3" name="comment"
+                        <textarea class="form-control" rows="2" name="comment"
                                 {% if booking.is_processed or booking.is_cancelled %} disabled="disabled" {% endif %}
                                 >{{ booking.comment }}</textarea>{% endif %}
                     </td>
