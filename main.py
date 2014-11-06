@@ -173,8 +173,8 @@ class NewBookingHandler(webapp2.RequestHandler):
             start_slot = int(self.request.get('start'))
             end_slot = int(self.request.get('end'))
 
-            native_values = {'user': user, 'date': date.strftime("%d-%m-%Y"), 'facility': facility.to_string(),
-                             'capacity': facility.capacity, 'start_slot': start_slot, 'end_slot': end_slot,
+            native_values = {'user': user, 'date': date.strftime("%d-%m-%Y"), 'facility': facility.to_dict(),
+                             'facility_str': facility.to_string(), 'start_slot': start_slot, 'end_slot': end_slot,
                              'max_slot': facility.max_time_per_day * 2, 'id': self.request.get('id'),
                              'price': facility.price_per_hr, 'is_auto_approval': facility.is_auto_approval}
 

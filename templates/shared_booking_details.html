@@ -66,6 +66,10 @@
                     <td>{{ booking.place_time }}</td>
                 </tr>
                 <tr>
+                    <td>Fee</td>
+                    <td>{{ booking.price }}</td>
+                </tr>
+                <tr>
                     <td>Purpose</td>
                     <td>{% if is_admin %}{{ booking.purpose }}{% else %}
                         <textarea class="form-control" rows="2" name="purpose"

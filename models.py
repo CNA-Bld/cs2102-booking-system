@@ -75,6 +75,13 @@ class BookTime():
                 end = i
         return {'start': utils.slot_to_str(start), 'end': utils.slot_to_str(end)}
 
+    def count_length(self):
+        length = 0
+        for i in self.data:
+            if i:
+                length += 1
+        return length / 2.0
+
     def to_dict_list(self):
         dict_list = {}
         if self.data[0]:
@@ -285,6 +292,9 @@ class Book(ndb.Model):
             self.put()
             return True
 
+    def get_price(self):
+        return BookTime(self.time).count_length() * self.facility_id.get().price_per_hr
+
     def approve(self):
         self.is_processed = True
         self.is_approved = True
@@ -318,7 +328,7 @@ class Book(ndb.Model):
     def to_dict(self):
         return {'facility_str': self.facility_id.get().to_string(),
                 'facility_id': self.facility_id.id(),
-                'date': self.date.strftime("%d-%m-%Y"),
+                'date': self.date.strftime("%d-%m-%Y"), 'price': self.get_price(),
                 'is_approved': self.is_approved, 'is_processed': self.is_processed,
                 'is_cancelled': self.is_cancelled,
                 'is_declined': self.is_processed and not self.is_approved,

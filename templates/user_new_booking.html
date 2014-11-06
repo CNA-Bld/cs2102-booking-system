@@ -12,6 +12,11 @@
 
     <script>
         $(document).ready(function () {
+            var priceFormat = wNumb({
+                prefix: '$ ',
+                decimals: 2,
+                thousand: ','
+            });
             var encoder = function (value) {
                 var str = Math.floor(value / 2).toString();
                 if (value % 2 == 0) {
@@ -23,6 +28,10 @@
                     str = '0'.concat(str);
                 }
                 return str;
+            };
+            var setPrice = function () {
+                var val = $("#slider").val();
+                $("#price").val(priceFormat.to((val[1] - val[0]) / 2 * {{ facility.price_per_hr }}));
             };
             $('#slider').noUiSlider({
                 start: [{{ start_slot }}, {{ end_slot }}],
@@ -39,6 +48,10 @@
             });
             $("#slider").Link('lower').to($('#start_time'), null, {to: encoder});
             $("#slider").Link('upper').to($('#end_time'), null, {to: encoder});
+            $("#slider").on({
+                slide: setPrice,
+            });
+            setPrice();
         });
     </script>
 
@@ -46,14 +59,19 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">New Booking</h3>
+                <h3 class="panel-title">New Booking
+                    {% if facility.is_auto_approval %}
+                        <span class="label label-success">Auto</span>
+                    {% else %}
+                        <span class="label label-danger">Manual</span>
+                    {% endif %}
+                </h3>
             </div>
             <div class="panel-body">
                 <form action="./?id={{ id }}" method="post" class="form-horizontal" role="form">
 
                     <div class="form-group">
                         <label for="date" class="col-sm-2 control-label">Date</label>
-
                         <div class="col-sm-10">
                             <input id="date" type="text" name="date" class="form-control"
                                    readonly value="{{ date }}">
@@ -62,25 +80,18 @@
 
                     <div class="form-group">
                         <label for="facility" class="col-sm-2 control-label">Facility</label>
-
-                        <div class="col-sm-10">
+                        <div class="col-sm-8">
                             <input id="facility" type="text" name="facility" class="form-control"
-                                   readonly value="{{ facility }}">
+                                   readonly value="{{ facility_str }}">
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="capacity" class="col-sm-2 control-label">Capacity</label>
-
-                        <div class="col-sm-10">
-                            <input id="capacity" type="text" name="capacity" class="form-control"
-                                   readonly value="{{ capacity }}">
+                        <div class="col-sm-2">
+                            <a href="/facilities/details/?id={{ id }}" class="btn btn-default btn-block"
+                               role="button">Details</a>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="purpose" class="col-sm-2 control-label">Purpose</label>
-
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="2" id="purpose" name="purpose"></textarea>
                         </div>
@@ -88,7 +99,6 @@
 
                     <div class="form-group">
                         <label for="comment" class="col-sm-2 control-label">Comment</label>
-
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
                         </div>
@@ -108,6 +118,14 @@
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
                             <div id="slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">Fee</label>
+                        <div class="col-sm-10">
+                            <input id="price" type="text" name="price" class="form-control"
+                                   readonly value="">
                         </div>
                     </div>
 
