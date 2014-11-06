@@ -73,8 +73,14 @@ class MainHandler(webapp2.RequestHandler):
             else:
                 is_querying = False
                 facilities_dict_list = []
-            native_values = {'location_list': models.Facility.get_loc_list(), 'query_string': self.request.query_string,
-                             'type_list': models.Facility.get_type_list(), 'selected_date': date.strftime("%d-%m-%Y"),
+            location_list = models.Facility.get_loc_list()
+            sorted_location_list = sorted(location_list.keys())
+            sorted_type_list = []
+            for types in location_list.values():
+                sorted_type_list += types
+            sorted_type_list = sorted(list(set(sorted_type_list)))
+            native_values = {'location_list': location_list, 'sorted_location_list': sorted_location_list,
+                             'type_list': sorted_type_list, 'selected_date': date.strftime("%d-%m-%Y"),
                              'selected_location': location, 'selected_type': facility_type, 'is_querying': is_querying,
                              'selected_capacity': capacity, 'facility_list': facilities_dict_list,
                              'weekday': date.strftime("%A"), 'error': self.request.get('error'), 'user': user}

@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block additional_css %}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css"
+          rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css"
           rel="stylesheet">
 {% endblock %}
@@ -10,7 +11,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
     {% if facility_list %}
-        <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}"></script>
+        <script type="text/javascript"
+                src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['timeline']}]}"></script>
     {% endif %}
 {% endblock %}
 
@@ -40,7 +42,33 @@
                 todayHighlight: true,
                 autoclose: true
             });
+
+            var location_type_list = {
+                {% for location in location_list %}
+                    '{{ location }}': [
+                        {% for type in location_list[location] %}
+                            '{{ type }}',
+                        {% endfor %}
+                    ],
+                {% endfor %}
+            };
+
             $('.selectpicker').selectpicker();
+
+            var update_type_list = function () {
+                var selected_location = $("#location").val();
+                $("#type option:gt(0)").each(function () {
+                    if ($.inArray($(this).val(), location_type_list[selected_location]) == -1) {
+                        $(this).attr('disabled', 'disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+                $('.selectpicker').selectpicker('refresh');
+            };
+
+            update_type_list();
+            $("#location").change(update_type_list);
         });
     </script>
 
@@ -115,20 +143,20 @@
 
                 <form name="filter" action="" method="get" class="form-horizontal" role="form">
                     <div class="form-group" id="selectdate">
-                        <label for="iddate" class="col-sm-2 control-label">Date</label>
+                        <label for="date" class="col-sm-2 control-label">Date</label>
 
                         <div class="col-sm-10">
-                            <input id="iddate" type="text" name="date" class="form-control" required="true"
+                            <input id="date" type="text" name="date" class="form-control" required="true"
                                    autocomplete="false" value="{{ selected_date }}">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="idlocation" class="col-sm-2 control-label">Location</label>
+                        <label for="location" class="col-sm-2 control-label">Location</label>
 
                         <div class="col-sm-10">
-                            <select id="idlocation" name="location" class="selectpicker form-control">
-                                {% for location in location_list %}
+                            <select id="location" name="location" class="selectpicker form-control">
+                                {% for location in sorted_location_list %}
                                     <option value="{{ location }}"
                                             {% if location == selected_location %}selected{% endif %}>{{ location }}</option>
                                 {% endfor %}
@@ -138,10 +166,10 @@
 
 
                     <div class="form-group">
-                        <label for="idtype" class="col-sm-2 control-label">Type</label>
+                        <label for="type" class="col-sm-2 control-label">Type</label>
 
                         <div class="col-sm-10">
-                            <select id="idtype" name="type" class="selectpicker form-control">
+                            <select id="type" name="type" class="selectpicker form-control">
                                 <option value="">Any</option>
                                 {% for type in type_list %}
                                     <option value="{{ type }}"
@@ -153,10 +181,10 @@
 
 
                     <div class="form-group">
-                        <label for="idcapacity" class="col-sm-2 control-label">Capacity</label>
+                        <label for="capacity" class="col-sm-2 control-label">Capacity</label>
 
                         <div class="col-sm-10">
-                            <input id="idcapacity" name="capacity" class="form-control"
+                            <input id="capacity" name="capacity" class="form-control"
                                    autocomplete="false" {% if selected_capacity > 0 %}
                                    value="{{ selected_capacity }}" {% endif %}>
                         </div>

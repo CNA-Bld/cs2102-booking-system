@@ -176,11 +176,12 @@ class Facility(ndb.Model):
     @classmethod
     def get_loc_list(cls):
         query = cls.query().fetch()
-        loc_list = []
+        loc_list = {}
         for f in query:
             if f.location not in loc_list:
-                loc_list.append(f.location)
-        loc_list.sort()
+                loc_list[f.location] = []
+            if f.type not in loc_list[f.location]:
+                loc_list[f.location].append(f.type)
         return loc_list
 
     @classmethod
