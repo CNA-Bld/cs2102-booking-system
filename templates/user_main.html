@@ -181,12 +181,11 @@
 
 
                     <div class="form-group">
-                        <label for="capacity" class="col-sm-2 control-label">Capacity</label>
+                        <label for="capacity" class="col-sm-2 control-label">Minimum Capacity</label>
 
                         <div class="col-sm-10">
                             <input id="capacity" name="capacity" class="form-control"
-                                   autocomplete="false" {% if selected_capacity > 0 %}
-                                   value="{{ selected_capacity }}" {% endif %}>
+                                   autocomplete="false" value="{{ selected_capacity }}">
                         </div>
                     </div>
 
