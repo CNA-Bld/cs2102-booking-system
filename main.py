@@ -278,6 +278,16 @@ class AdminHandler(webapp2.RequestHandler):
         elif self.request.get('do') == 'view_booking':
             template_values['booking'] = models.Book.get_by_book_id(int(self.request.get('id'))).to_dict()
             template = JINJA_ENVIRONMENT.get_template('shared_booking_details.html')
+        elif self.request.get('do') == 'manage_users':
+            template_values['user_list'] = [
+                dict(user.to_dict(), **{'booking_count': len(models.Book.find_user_booking(user))}) for user in
+                models.User.query().fetch()]
+            template = JINJA_ENVIRONMENT.get_template('admin_manage_users.html')
+        elif self.request.get('do') == 'view_user':
+            user = models.User.get_user_by_id(self.request.get('id'))
+            template_values['user_info'] = user.to_dict()
+            template_values['booking_list'] = [booking.to_dict() for booking in models.Book.find_user_booking(user)]
+            template = JINJA_ENVIRONMENT.get_template('admin_view_user.html')
         else:
             template = JINJA_ENVIRONMENT.get_template('admin_main.html')
         self.response.write(template.render(template_values))

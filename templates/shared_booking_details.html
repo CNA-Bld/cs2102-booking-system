@@ -58,6 +58,8 @@
                         <td>User</td>
                         <td>{{ booking.booking_user.name }} [{{ booking.booking_user.email }}]
                             ({{ booking.booking_user.faculty }})
+                            <a href="/admin/?do=view_user&id={{ booking.booking_user.user_id }}" class="btn btn-default btn-xs"
+                               role="button">Details</a>
                         </td>
                     </tr>
                 {% endif %}

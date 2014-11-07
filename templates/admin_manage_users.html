@@ -1,0 +1,50 @@
+{% extends "admin_main.html" %}
+
+{% block additional_css %}
+    <link href="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/1.0.2/css/dataTables.responsive.css" rel="stylesheet">
+{% endblock %}
+
+{% block additional_js %}
+    <script src="https://cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/1.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+{% endblock %}
+
+{% block admin_body %}
+
+    <script>
+        $(document).ready(function () {
+            $('#booking').dataTable({});
+        });
+    </script>
+
+    <table id="booking" class="table table-striped dt-responsive">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Faculty</th>
+            <th>Email</th>
+            <th>Booking Count</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in user_list %}
+            <tr>
+                <td>{{ user.user_id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.faculty }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.booking_count }}</td>
+                <td>
+                    <a href="/admin/?do=view_user&id={{ user.user_id }}" class="btn btn-default btn-xs"
+                       role="button">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

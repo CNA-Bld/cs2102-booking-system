@@ -1,0 +1,90 @@
+{% extends "admin_main.html" %}
+
+{% block additional_css %}
+    <link href="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.css"
+          rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/1.0.2/css/dataTables.responsive.css" rel="stylesheet">
+{% endblock %}
+
+{% block additional_js %}
+    <script src="https://cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/1.0.2/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/380cb78f450/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+{% endblock %}
+
+{% block admin_body %}
+
+    <script>
+        $(document).ready(function () {
+            $('#booking').dataTable({
+                "order": [
+                    [ 3, "desc" ]
+                ]
+            });
+        });
+    </script>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>{{ user_info.user_id }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td>{{ user_info.name }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ user_info.email }}</td>
+        </tr>
+        <tr>
+            <td>Faculty</td>
+            <td>{{ user_info.faculty }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table id="booking" class="table table-striped dt-responsive">
+        <thead>
+        <tr>
+            <th>Facility</th>
+            <th>Date</th>
+            <th>Placed Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for booking in booking_list %}
+            <tr>
+                <td>{{ booking.facility_str }}</td>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.place_time }}</td>
+                <td>
+                    {% if booking.is_processed %}
+                        {% if booking.is_approved %}
+                            <span class="label label-success">Approved</span>
+                        {% else %}
+                            <span class="label label-danger">Declined</span>
+                        {% endif %}
+                    {% else %}
+                        {% if booking.is_cancelled %}
+                            <span class="label label-default">Cancelled</span>
+                        {% else %}
+                            <span class="label label-primary">Processing</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/admin/?do=view_booking&id={{ booking.id }}" class="btn btn-default btn-xs"
+                       role="button">Details</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
