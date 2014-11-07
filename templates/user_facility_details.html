@@ -48,7 +48,7 @@
                                 roseType: 'area',
                                 data: [
                                     {% for key, value in facility.stat.faculty_breakdown.iteritems() %}
-                                        {value: {{ value }}, name: '{{ key }}'},
+                                        {value: {{ value }}, name: '{{ key|safe }}'},
                                     {% endfor %}
                                 ]
                             },
