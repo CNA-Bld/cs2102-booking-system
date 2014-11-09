@@ -197,8 +197,6 @@ class NewBookingHandler(webapp2.RequestHandler):
             start_slot = utils.str_to_slot(self.request.get('start_time'))
             end_slot = utils.str_to_slot(self.request.get('end_time'))
 
-            print start_slot
-
             time = models.BookTime.create_booking_time(start_slot, end_slot)
 
             booking = models.Book(date=date, purpose=self.request.get('purpose'), comment=self.request.get('comment'),
