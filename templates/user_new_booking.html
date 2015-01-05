@@ -61,9 +61,9 @@
             <div class="panel-heading">
                 <h3 class="panel-title">New Booking
                     {% if facility.is_auto_approval %}
-                        <span class="label label-success">Auto</span>
+                        <span class="label label-success pull-right">Auto</span>
                     {% else %}
-                        <span class="label label-danger">Manual</span>
+                        <span class="label label-danger pull-right">Manual</span>
                     {% endif %}
                 </h3>
             </div>
@@ -72,6 +72,7 @@
 
                     <div class="form-group">
                         <label for="date" class="col-sm-2 control-label">Date</label>
+
                         <div class="col-sm-10">
                             <input id="date" type="text" name="date" class="form-control"
                                    readonly value="{{ date }}">
@@ -80,6 +81,7 @@
 
                     <div class="form-group">
                         <label for="facility" class="col-sm-2 control-label">Facility</label>
+
                         <div class="col-sm-8">
                             <input id="facility" type="text" name="facility" class="form-control"
                                    readonly value="{{ facility_str }}">
@@ -92,6 +94,7 @@
 
                     <div class="form-group">
                         <label for="purpose" class="col-sm-2 control-label">Purpose</label>
+
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="2" id="purpose" name="purpose"></textarea>
                         </div>
@@ -99,6 +102,7 @@
 
                     <div class="form-group">
                         <label for="comment" class="col-sm-2 control-label">Comment</label>
+
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
                         </div>
@@ -123,6 +127,7 @@
 
                     <div class="form-group">
                         <label for="price" class="col-sm-2 control-label">Fee</label>
+
                         <div class="col-sm-10">
                             <input id="price" type="text" name="price" class="form-control"
                                    readonly value="">
